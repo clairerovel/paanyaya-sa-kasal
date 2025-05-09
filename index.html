@@ -222,27 +222,12 @@
             justify-content: space-between; /* This creates space between top and bottom */
             padding: 40px 20px; /* Padding top and bottom */
         }
-     
-        .cover-top {
-            padding-top: 30px;
-         }
-
-        .cover-bottom {
-            padding-bottom: 30px;
-         }
         
         .cover-title {
             font-size: 35x;
             margin-bottom: 20px;
             color: #42312b;
             text-shadow: 0 2px 10px rgba(255,255,255,0.8);
-        }
-        
-        .cover-subtitle {
-            font-size: 22px;
-            margin-bottom: 15px;
-            font-weight: 400;
-            color: #5c3c35;
         }
         
 		.page-indicators {
@@ -279,7 +264,6 @@
            }
 
            .banner-layout .page-text {
-           max-height: 55%; /* Give more space to text */
            overflow-y: auto; /* Allow scrolling if text is too long */
            padding: 0 5px;
            text-align: center;
@@ -302,26 +286,6 @@
 			width: 20px;
 			background: #5c3c35;
 		}
-        
-        .floral-decoration {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            opacity: 0.2;
-            pointer-events: none;
-        }
-        
-        .decoration-1 {
-            top: 10px;
-            right: 10px;
-            transform: rotate(45deg);
-        }
-        
-        .decoration-2 {
-            bottom: 10px;
-            left: 10px;
-            transform: rotate(-45deg);
-        }
         
         @media (max-height: 600px) {
             .page-image {
@@ -632,28 +596,6 @@
 			z-index: 10;
 			position: relative;
 		}
-
-		/* Add a caption that appears on hover */
-		.motif-container {
-			position: relative;
-			margin-bottom: 20px;
-		}
-
-		.motif-caption {
-			position: absolute;
-			bottom: -20px;
-			left: 0;
-			right: 0;
-			text-align: center;
-			font-size: 14px;
-			color: #5c3c35;
-			opacity: 0;
-			transition: opacity 0.3s ease;
-		}
-
-		.motif-container:hover .motif-caption {
-			opacity: 1;
-		}
 		
 		/* Gallery Modal Styles */
 		.gallery-modal {
@@ -803,88 +745,9 @@
 			transform: scale(1.1);
 		}
 		
-		.intro {
-			background-color: #E8F0FE;
-			padding: 15px;
-			border-radius: 8px;
-			margin-bottom: 25px;
-		}
-		
-		.step-container {
-			background-color: white;
-			padding: 20px;
-			border-radius: 8px;
-			box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-			margin-bottom: 25px;
-		}
-		
-		.step {
-			display: flex;
-			margin-bottom: 20px;
-			align-items: flex-start;
-		}
-		
-		.step-number {
-			background-color: #4285F4;
-			color: white;
-			width: 30px;
-			height: 30px;
-			border-radius: 50%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			margin-right: 15px;
-			flex-shrink: 0;
-		}
-		
-		.step-content {
-			flex-grow: 1;
-		}
-		
-		.step-image {
-			margin-top: 15px;
-			border: 1px solid #ddd;
-			border-radius: 4px;
-			overflow: hidden;
-		}
-		
-		.step-image img {
-			max-width: 100%;
-			display: block;
-		}
-		
-		.faq {
-			background-color: #FEF7E0;
-			padding: 20px;
-			border-radius: 8px;
-		}
-		
 		.faq h2 {
 			color: #F4B400;
 			border-left: 4px solid #F4B400;
-		}
-		
-		.question {
-		    text-align: justify;
-			font-weight: bold;
-			color: #F4B400;
-			margin-top: 15px;
-		}
-		
-		.footer {
-			text-align: center;
-			margin-top: 40px;
-			padding-top: 20px;
-			border-top: 1px solid #ddd;
-			font-style: italic;
-		}
-		
-		.note {
-		    text-align: justify;
-			background-color: #FFEBEE;
-			padding: 10px;
-			border-left: 4px solid #DB4437;
-			margin: 20px 0;
 		}
 		
 		@media (max-width: 768px) {
@@ -897,6 +760,91 @@
 			}
 		}
 		
+		.cover-names {
+			width: 80%;
+			max-width: 200px;
+			position: absolute;
+			top: 40px; /* Distance from top */
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		
+		/* QR Modal Styles */
+		.qr-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0,0,0,0.9);
+			z-index: 1000;
+			overflow: hidden;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.qr-content {
+			position: relative;
+			width: 90%;
+			max-width: 500px;
+			max-height: 80vh;
+			background: white;
+			border-radius: 10px;
+			padding: 20px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.qr-prompt {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-bottom: 20px;
+		}
+
+		.qr-prompt img {
+			max-width: 100%;
+			max-height: 60vh;
+			object-fit: contain;
+			border-radius: 5px;
+		}
+				
+		.qr-close {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			background: rgba(248, 205, 192, 0.7);
+			border: none;
+			color: #42312b;
+			font-size: 24px;
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			cursor: pointer;
+			transition: all 0.3s;
+			z-index: 10;
+		}
+
+		.qr-close:hover {
+			background: rgba(248, 205, 192, 0.9);
+		}
+
+		.qr-link {
+			cursor: pointer;
+			display: block;
+		}	
+		
+		.gallery-close, .qr-close {
+			z-index: 1001;
+			pointer-events: auto;
+		}
+
+		.gallery-modal *, .qr-modal * {
+			box-sizing: border-box;
+		}
 		
     </style>
 </head>
@@ -912,6 +860,7 @@
                 </div>
                 <div class="cover-content">
                    <h1 class="cover-title"></h1>
+				   <img src="names.png" class="cover-names" alt="Couple Names">
                 <p class="cover-date">JULY 12, 2025</p>
            </div>
           </div>
@@ -1213,7 +1162,7 @@
 					<div class="title-divider">
 					<span class="heart-icon">❤</span>
 					</div>
-					<div style="width: 100%; max-height: 80%; overflow-y: auto; margin-bottom: 10px; padding: 0 5px;">
+					<div style="width: 100%; max-height: 75%; overflow-y: auto; margin-bottom: 10px; padding: 0 5px;">
 						<div class="entourage-container" style="display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 2;">
 							<div class="entourage-center" style="text-align: center; width: 100%; margin: 5px 0; position: relative; z-index: 2;">
 								<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Mahal naming mga Magulang</h3>
@@ -1280,7 +1229,7 @@
 								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Klynn Alexeen C. Nacar</p>
 								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Ma. Samantha Claire H. Botaire</p>
 								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Mitchel Maries M. Correa</p>
-								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Naomi Beatrix Aguil-De Guzman</p>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Naomi Beatrix A. De Guzman</p>
 								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Reeane Chesney P. Aguil</p>
 
 							</div>
@@ -1538,16 +1487,15 @@
 					Para sa anumang katanungan o karagdagang impormasyon, maaari po ninyo kaming makontak sa:<br>rovel.herona@gmail.com | +63 912 345 6789<br>claireaugil@gmail.com | +63 912 345 6789<br><br>
 					Ang inyong panalangin at presensya lamang po ang aming hiling sa araw ng aming pag-iisang dibdib.<br>
 					Ngunit kung nais pa rin po ninyong magbahagi ng biyaya, higit po naming pahahalagahan ang regalong pinansyal.
-					Maaari po ninyo itong ipadala sa pamamagitan ng mga sumusunod na detalye:<br><br> 
+					Maaari po ninyo itong ipadala sa pamamagitan ng mga sumusunod na detalye:
 					</p>
 					<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-					<div style="width: 48%; text-align: center;">
-					<img src="gcashQR.jpg" alt="Color Palette" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
-					</div>
-					<div style="width: 48%; text-align: center;">
-					<img src="mayaQR.jpg" alt="Color Palette" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
-					</div>
-					
+						<div style="width: 48%; text-align: center;">
+							<a href="#" class="qr-link" data-qr="gcash"><img src="gcashQR.jpg" alt="Gcash QR Code" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;"></a>
+						</div>
+						<div style="width: 48%; text-align: center;">
+							<a href="#" class="qr-link" data-qr="maya"><img src="mayaQR.jpg" alt="Maya QR Code" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;"></a>
+						</div>
 					</div>
 				    
 				</div>
@@ -1556,6 +1504,18 @@
 				</div>
 			</div>
 		</div>
+		
+		<!-- QR Modal -->
+		<div class="qr-modal" id="qrModal">
+			<div class="qr-content">
+				<button class="qr-close" id="closeQR">&times;</button>
+				<div class="qr-prompt">
+					<img src="gcashQR.jpg" alt="Gcash QR Code" id="gcashQR" style="display: none;">
+					<img src="mayaQR.jpg" alt="Maya QR Code" id="mayaQR" style="display: none;">
+				</div>
+			</div>
+		</div>
+
     
     <div class="page-indicators">
         <div class="indicator active" data-index="0"></div>
@@ -1644,19 +1604,9 @@
             }
             
             // Touch event handlers
-			function handleTouchStart(e) {
-				if (galleryModal.style.display === 'flex') return;
-				touchStartX = e.touches[0].clientX;
-			}
-
 			function handleTouchMove(e) {
 				if (galleryModal.style.display === 'flex') return;
 				touchEndX = e.touches[0].clientX;
-			}
-
-			function handleTouchEnd() {
-				if (galleryModal.style.display === 'flex') return;
-				handleSwipe();
 			}
 
 			// Mouse event handlers (for desktop testing)
@@ -1891,13 +1841,58 @@
 			});
 
 			// Close when clicking outside content
-			galleryModal.addEventListener('click', (e) => {
+			galleryModal.addEventListener('click', function(e) {
 				if (e.target === galleryModal) {
 					e.preventDefault();
-					e.stopPropagation();
 					galleryModal.style.display = 'none';
 					document.body.style.overflow = '';
 				}
+			});
+			
+			// QR Code functionality
+			const qrModal = document.getElementById('qrModal');
+			const closeQRBtn = document.getElementById('closeQR');
+			const qrLinks = document.querySelectorAll('.qr-link');
+
+			// Open QR modal when clicking on a QR code
+			qrLinks.forEach(link => {
+				link.addEventListener('click', function(e) {
+					e.preventDefault();
+					const qrType = this.getAttribute('data-qr');
+					
+					// Hide all QR images first
+					document.querySelectorAll('.qr-prompt img').forEach(img => {
+						img.style.display = 'none';
+					});
+					
+					// Show the selected QR image
+					document.getElementById(qrType + 'QR').style.display = 'block';
+					
+					// Show the modal
+					qrModal.style.display = 'flex';
+					document.body.style.overflow = 'hidden';
+				});
+			});
+
+			// Close QR modal
+			closeQRBtn.addEventListener('click', function(e) {
+				e.preventDefault();
+				qrModal.style.display = 'none';
+				document.body.style.overflow = '';
+			});
+
+			// Close when clicking outside content
+			qrModal.addEventListener('click', function(e) {
+				if (e.target === qrModal) {
+					e.preventDefault();
+					qrModal.style.display = 'none';
+					document.body.style.overflow = '';
+				}
+			});
+
+			// Prevent modal close when clicking inside
+			document.querySelector('.qr-content').addEventListener('click', function(e) {
+				e.stopPropagation();
 			});
 
 			function navigateGallery(direction) {
