@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasal ni : Claire at Rovel</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=Dancing+Script:wght@400;600&family=Cal+Sans&family=Lilita+One&family=Oswald:wght@400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Schibsted Grotesk', serif;
+            background: #F8CDC0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: #42312b;
+            touch-action: manipulation;
+        }
+		
+		h1 {
+            font-family: 'Cal Sans', serif;
+        }
+        
+        body, p, h1, h2, h3, div, span {
+            font-style: normal;
+        }
+        
+        .page[data-index="1"] .page-text i {
+            font-style: italic;
+        }
+
+        .instruction {
+            text-align: center;
+            padding: 5px;
+            font-size: 14px;
+            font-style: normal;
+            color: #5c3c35;
+            background-color: rgba(255, 255, 255, 0.7);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .book-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 2000px;
+            position: relative;
+            overflow: hidden;
+            padding: 40px 10px 60px 10px;
+        }
+        
+        .book {
+            width: 100%;
+            height: 100%;
+            max-width: 400px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+        
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            background-color: white;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .page.active {
+            visibility: visible;
+            pointer-events: auto;
+            z-index: 10;
+        }
+        
+        .page.flipping {
+            transform: rotateY(-130deg);
+            z-index: 20;
+            box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .page-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Changed to align from top */
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+            background: linear-gradient(to bottom, rgba(248,205,192,0.95), rgba(248,205,192,0.8));
+			animation: contentFade 0.6s ease-out;
+        }
+		
+		@keyframes contentFade {
+			from { opacity: 0; transform: translateY(20px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+        
+        .cover .page-content {
+            background: linear-gradient(to bottom, rgba(248,205,192,0.95), rgba(248,205,192,0.8));
+            justify-content: center; /* Keep the cover centered */
+        }
+
+		.cover-date {
+            font-size: 25px;
+			margin-top: 20px;
+            font-weight: 500;
+            color: #42312b;
+            font-family: 'Oswald', cursive;
+			animation: fadeInUp 1s ease-out;
+        }
+		
+		@keyframes fadeInUp {
+			from { opacity: 0; transform: translateY(20px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+        
+        .page-image {
+            width: 85%;
+            height: 55%;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+		
+
+
+		/* Lazy loading */
+		img {
+			loading: lazy;
+		}
+        
+        .page-title {
+            margin-top: 0; /* Add this to ensure no extra space */
+            font-size: 22px;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+			margin-bottom: 1.5rem !important;
+            font-weight: 500;
+            font-family: 'Oswald', cursive;
+            color: #5c3c35;
+            order: -1; /* This ensures title appears first in flex layout */
+        }
+        
+        .page-text {
+			font-size: 15px;
+			line-height: 1.8;
+			hyphens: auto;
+        }
+		
+		.title-divider {
+			margin: 1.5rem auto;
+		}
+        
+        .cover-image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .cover-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 100;
+        }
+		
+		.cover-image-container::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+        
+        .cover-content {
+            position: relative;
+            z-index: 2;
+            padding: 20px;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between; /* This creates space between top and bottom */
+            padding: 40px 20px; /* Padding top and bottom */
+        }
+     
+        .cover-top {
+            padding-top: 30px;
+         }
+
+        .cover-bottom {
+            padding-bottom: 30px;
+         }
+        
+        .cover-title {
+            font-size: 35x;
+            margin-bottom: 20px;
+            color: #42312b;
+            text-shadow: 0 2px 10px rgba(255,255,255,0.8);
+        }
+        
+        .cover-subtitle {
+            font-size: 22px;
+            margin-bottom: 15px;
+            font-weight: 400;
+            color: #5c3c35;
+        }
+        
+		.page-indicators {
+			position: fixed;
+			bottom: 20px;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			gap: 8px;
+			z-index: 1000;
+		}
+		
+		/* New code for the banner */
+           .banner-layout {
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           }           
+
+           .banner-layout .page-image {
+           width: 100%;
+           height: 45%; /* Reduce height to make it a banner */
+           margin-top: 0;
+           margin-bottom: 15px;
+           object-position: center;
+           }
+           
+           .banner-layout .page-title {
+           margin-bottom: 10px;
+           }
+
+           .banner-layout .page-content {
+           padding: 15px;
+           }
+
+           .banner-layout .page-text {
+           max-height: 55%; /* Give more space to text */
+           overflow-y: auto; /* Allow scrolling if text is too long */
+           padding: 0 5px;
+           text-align: center;
+           margin: 0 auto;
+           max-width: 100%;
+           font-size: 13px;
+           
+           }
+		/* end code for the banner */   
+     
+		.indicator {
+			width: 8px;
+			height: 8px;
+			border-radius: 4px;
+			background: rgba(92,60,53,0.2);
+			transition: all 0.3s ease;
+		}
+
+		.indicator.active {
+			width: 20px;
+			background: #5c3c35;
+		}
+        
+        .floral-decoration {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        
+        .decoration-1 {
+            top: 10px;
+            right: 10px;
+            transform: rotate(45deg);
+        }
+        
+        .decoration-2 {
+            bottom: 10px;
+            left: 10px;
+            transform: rotate(-45deg);
+        }
+        
+        @media (max-height: 600px) {
+            .page-image {
+                height: 45%;
+            }
+            
+            .page-title {
+                font-size: 20px;
+                margin-bottom: 10px;
+            }
+            
+            .page-text {
+                font-size: 14px;
+            }
+        }
+        
+        /* Paper fold effect */
+        .page::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,0.03) 100%);
+            pointer-events: none;
+        }
+        
+        /* Page turning shadow */
+        .page.flipping::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0));
+            z-index: 5;
+            transform: rotateY(180deg);
+            backface-visibility: hidden;
+        }
+        
+        /* Mobile optimizations */
+		@media (max-width: 768px) {
+			.page-title {
+				font-size: 1.4rem !important;
+			}
+			
+			.page-text {
+				font-size: 14px;
+				padding: 0 10px;
+			}
+			
+			.book {
+				max-width: 100%;
+				margin: 0 15px;
+			}
+			
+			.entourage-item {
+				width: 100% !important;
+				margin-bottom: 1rem;
+			}
+			
+			.sponsors-columns {
+				flex-direction: column;
+				gap: 10px !important;
+			}
+		}
+
+        /* Larger venue photo styling */
+        .venue-page .page-image {
+            width: 95%;
+            height: 65%;
+            transition: opacity 1s ease-in-out;
+            margin-bottom: 10px;
+        }
+
+        /* For image rotation/carousel */
+        .venue-carousel {
+            position: relative;
+            width: 100%;
+            height: 95%;
+            margin-bottom: 0; /* Change from 15px to 0 */
+            margin-top: 0;
+        }
+
+        .venue-carousel img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 95%;
+            object-fit: cover;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .venue-carousel img.active {
+            opacity: 1;
+        }
+		
+		/* Bridal Entourage Page Styling - UPDATED */
+		.entourage-page {
+			background: linear-gradient(to bottom, rgba(248,205,192,0.95), rgba(248,205,192,0.8));
+			padding: 10px 10px 20px 10px;
+            position: relative; /* Add position relative for shadow effects */
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1); /* Add the same box-shadow as other pages */
+		}
+        
+        /* Add the paper fold effect to match other pages */
+        .entourage-page::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,0.03) 100%);
+            pointer-events: none;
+            z-index: 1; /* Ensure this appears above the content */
+        }
+
+        /* Add subtle inner shadow to create depth */
+        .entourage-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
+            pointer-events: none;
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+		.entourage-page .page-title {
+			margin-top: 10px;
+			margin-bottom: 20px;
+			font-size: 22px;
+			font-weight: 500;
+			text-align: center;
+			font-family: 'Dancing Script', cursive;
+			color: #5c3c35;
+            position: relative; /* For text shadow */
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5); /* Subtle text shadow for depth */
+		}
+
+		.entourage-container {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+            position: relative;
+            z-index: 2;
+		}
+
+		.entourage-row {
+			display: flex;
+			justify-content: space-between;
+			width: 100%;
+            position: relative;
+            z-index: 2;
+		}
+
+		.entourage-item {
+			width: 48%;
+			text-align: center;
+			transition: transform 0.3s ease;
+		}
+		
+		.entourage-item:hover {
+			transform: translateX(5px);
+		}
+
+		.entourage-item h3 {
+			font-size: 16px;
+			font-weight: bold;
+			margin-bottom: 2px;
+			color: #42312b;
+            position: relative;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+		}
+
+		.entourage-item p {
+			font-size: 14px;
+			margin: 0;
+			color: #42312b;
+		}
+
+		.entourage-center {
+			text-align: center;
+			width: 100%;
+			margin: 5px 0;
+            position: relative;
+            z-index: 2;
+		}
+
+		.entourage-center h3 {
+			font-size: 16px;
+			font-weight: bold;
+			margin-bottom: 2px;
+			color: #42312b;
+            position: relative;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+		}
+
+		.entourage-center p {
+			font-size: 14px;
+			margin: 2px 0;
+			color: #42312b;
+		}
+
+		.entourage-sponsors {
+			width: 100%;
+			text-align: center;
+			margin-top: 10px;
+            position: relative;
+            z-index: 2;
+		}
+
+		.entourage-sponsors h3 {
+			font-size: 16px;
+			font-weight: bold;
+			margin-bottom: 8px;
+			color: #42312b;
+            position: relative;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+		}
+
+		.sponsors-columns {
+			display: flex;
+			justify-content: center;
+			gap: 30px;
+            position: relative;
+		}
+
+        .sponsors-columns::after {
+            content: '';
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            height: 90%;
+            width: 1px;
+            background: rgba(66, 49, 43, 0.1);
+            transform: translateX(-50%);
+        }
+
+		.sponsors-column {
+			text-align: left;
+		}
+
+		.sponsors-column p {
+			font-size: 14px;
+			margin: 2px 0;
+			color: #42312b;
+		}
+		
+		/* Custom scrollbar styling for all scrollable areas */
+		.page-text::-webkit-scrollbar,
+		.page-content div::-webkit-scrollbar {
+			width: 6px;
+		}
+
+		.page-text::-webkit-scrollbar-track,
+		.page-content div::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		.page-text::-webkit-scrollbar-thumb,
+		.page-content div::-webkit-scrollbar-thumb {
+			background-color: rgba(92, 60, 53, 0.4);
+			border-radius: 10px;
+		}
+		
+		.title-divider {
+			display: flex;
+			align-items: center;
+			width: 100%;
+			margin: 0 auto 15px auto;
+			max-width: 250px;
+		}
+
+		.title-divider::before,
+		.title-divider::after {
+			content: "";
+			flex: 1;
+			border-bottom: 1px solid #5c3c35;
+		}
+
+		.title-divider .heart-icon {
+			margin: 0 10px;
+			font-size: 14px;
+			color: #5c3c35;
+		}
+		
+		/* Motif Image Hover */
+		.page[data-index="4"] img {
+			transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+			transform-origin: center;
+			cursor: pointer;
+		}
+
+		.page[data-index="4"] img:hover {
+			transform: scale(1.05) translateY(-5px);
+			box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+			z-index: 10;
+			position: relative;
+		}
+
+		/* Add a caption that appears on hover */
+		.motif-container {
+			position: relative;
+			margin-bottom: 20px;
+		}
+
+		.motif-caption {
+			position: absolute;
+			bottom: -20px;
+			left: 0;
+			right: 0;
+			text-align: center;
+			font-size: 14px;
+			color: #5c3c35;
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		.motif-container:hover .motif-caption {
+			opacity: 1;
+		}
+		
+		/* Gallery Modal Styles */
+		.gallery-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0,0,0,0.9);
+			z-index: 1000;
+			overflow: hidden;
+		}
+
+		.gallery-content {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.gallery-slide {
+			width: 90%;
+			height: 80%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.gallery-slide img {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+			border-radius: 5px;
+			position: absolute;
+			opacity: 0;
+			transition: opacity 0.5s ease-in-out;
+		}
+		
+		.gallery-slide img.active {
+			opacity: 1;
+			z-index: 1;
+		}
+
+		.gallery-nav {
+			position: absolute;
+			top: 50%;
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			padding: 0 20px;
+			transform: translateY(-50%);
+			z-index: 10;
+		}
+
+		.gallery-nav button {
+			background: rgba(248, 205, 192, 0.7);
+			border: none;
+			color: #42312b;
+			font-size: 24px;
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			cursor: pointer;
+			transition: all 0.3s;
+		}
+
+		.gallery-nav button:hover {
+			background: rgba(248, 205, 192, 0.9);
+		}
+
+		.gallery-close {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			background: rgba(248, 205, 192, 0.7);
+			border: none;
+			color: #42312b;
+			font-size: 24px;
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			cursor: pointer;
+			transition: all 0.3s;
+		}
+
+		.gallery-close:hover {
+			background: rgba(248, 205, 192, 0.9);
+		}
+
+		.gallery-indicators {
+			position: absolute;
+			bottom: 20px;
+			left: 0;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+			z-index: 10;
+		}
+
+		.gallery-indicator {
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+			background-color: rgba(248, 205, 192, 0.5);
+			cursor: pointer;
+			transition: all 0.3s;
+		}
+
+		.gallery-indicator.active {
+			background-color: rgba(248, 205, 192, 0.9);
+			transform: scale(1.2);
+		}
+
+		.gallery-link {
+			display: inline-block;
+			margin-top: 15px;
+			padding: 10px 20px;
+			background-color: #5c3c35;
+			color: #F8CDC0;
+			border-radius: 5px;
+			text-decoration: none;
+			font-weight: 500;
+			transition: all 0.3s;
+		}
+
+		.gallery-link:hover {
+			background-color: #42312b;
+			transform: translateY(-2px);
+		}
+		
+		/* Update color swatch styling */
+		.color-swatch {
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			border: 2px solid rgba(255,255,255,0.3);
+			box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+			transition: transform 0.3s ease;
+		}
+
+		.color-swatch:hover {
+			transform: scale(1.1);
+		}
+		
+		.intro {
+			background-color: #E8F0FE;
+			padding: 15px;
+			border-radius: 8px;
+			margin-bottom: 25px;
+		}
+		
+		.step-container {
+			background-color: white;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+			margin-bottom: 25px;
+		}
+		
+		.step {
+			display: flex;
+			margin-bottom: 20px;
+			align-items: flex-start;
+		}
+		
+		.step-number {
+			background-color: #4285F4;
+			color: white;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-right: 15px;
+			flex-shrink: 0;
+		}
+		
+		.step-content {
+			flex-grow: 1;
+		}
+		
+		.step-image {
+			margin-top: 15px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			overflow: hidden;
+		}
+		
+		.step-image img {
+			max-width: 100%;
+			display: block;
+		}
+		
+		.faq {
+			background-color: #FEF7E0;
+			padding: 20px;
+			border-radius: 8px;
+		}
+		
+		.faq h2 {
+			color: #F4B400;
+			border-left: 4px solid #F4B400;
+		}
+		
+		.question {
+		    text-align: justify;
+			font-weight: bold;
+			color: #F4B400;
+			margin-top: 15px;
+		}
+		
+		.footer {
+			text-align: center;
+			margin-top: 40px;
+			padding-top: 20px;
+			border-top: 1px solid #ddd;
+			font-style: italic;
+		}
+		
+		.note {
+		    text-align: justify;
+			background-color: #FFEBEE;
+			padding: 10px;
+			border-left: 4px solid #DB4437;
+			margin: 20px 0;
+		}
+		
+		@media (max-width: 768px) {
+			.step {
+				flex-direction: column;
+			}
+			
+			.step-number {
+				margin-bottom: 10px;
+			}
+		}
+		
+		
+    </style>
+</head>
+<body>
+    <div class="instruction">swipe left or right to turn pages</div>
+    
+    <div class="book-container">
+        <div class="book">
+            <!-- Cover Page -->
+            <div class="page cover active" data-index="0">
+                <div class="cover-image-container">
+                   <img src="coverpage.jpg" alt="Garden background" class="cover-image">
+                </div>
+                <div class="cover-content">
+                   <h1 class="cover-title"></h1>
+                <p class="cover-date">JULY 12, 2025</p>
+           </div>
+          </div>
+            
+            <!-- Page 1 -->
+			<div class="page" data-index="1">
+				<div class="page-content banner-layout">
+					<h2 class="page-title">ANG AMING KWENTO</h2>
+					<div class="title-divider">
+					<span class="heart-icon">❤</span>
+					</div>
+					<img src="couplephoto.jpg" alt="Couple photo" class="page-image">        
+					<p class="page-text">
+						Tulad ng mga bituing nakatakdang bumuo ng isang konstelasyon, hindi namin alam na ang aming mga buhay ay nakahanay na bago pa man namin nakilala ang isa't isa. 
+						<br><br>
+						Ang uniberso ay kumilos sa maraming paraan: sa isang concert ng Incubus sa Pilipinas, kami ay huminga ng parehong hangin at nakinig sa parehong musika, nakaupo lamang ilang hilera ang pagitan ngunit hindi alam ang presensya ng bawat isa. Araw-araw, habang nagbibisikleta ako sa mga kalye ng lungsod, dinadaanan ko ang kanyang pinagtatrabahuhan, marahil nakakakita ng sulyap ng isa't isa sa mga bintana o pintuan nang hindi nalalaman ang kahalagahan. Pagkatapos ay dumating ang kakaibang araw na iyon nang nagkaroon ng problema ang aking GPS sa isang paglalakbay sa bisikleta, inililihis ako mula sa aking nilalayong daan patungo sa rutang para sa mga kotse, na sa huli ay ginagabayan ako papunta sa malapit sa kanyang bahay—na para bang may kosmikong kamay na nagsasanay para sa aming mga pagtatagpo sa hinaharap. Maging ang aming mga pamilya ay tila umaawit ng parehong tono ng nakatakdang koneksyon: ang kanyang ama ay may parehong pangalan ng akin, ang mga pangalan ng kanyang mga kapatid na Rommel at Rodel ay kapansin-pansing umaawit katulad ng aking Rovel, na lumilikha ng kamangha-manghang salamin sa pagitan ng aming mga buhay. At sa isa pang kakaibang pangyayari, ang kanyang kapatid ay tinatawag na Rjay, kapareho ng pangalan ng aking matalik na kaibigan. 
+						<br><br>
+						Nang sa wakas ay nagkakilala kami online, natuklasan ang isang kagiliw-giliw na detalye pagkatapos ng isa pa tungkol sa isa't isa, ang mga pagkakatulad na ito ay nagsimulang maghayag ng kanilang mga sarili tulad ng mga piraso ng puzzle na bumabagsak sa lugar. Sa bawat pag-uusap, bawat interes at pagkakataong pinaghahatian, lalong tumitibay ang aming paniniwala na ang tinatawag ng iba na "red string theory" ay tahimik, matiyagang humihila sa amin nang magkasama—na nagpapatunay na minsan, ang pag-ibig ay hindi lang basta nangyayari; ito ay laging nakatakda.
+						<br><br>
+						❀❀❀<br>
+						<i><br>
+						Like stars destined to form a constellation, our lives were invisibly aligned long before we knew each other existed. 
+						<br><br>
+						The universe conspired in countless ways: at an Incubus concert in the Philippines, we breathed the same air and shared the same music, seated mere rows apart yet unaware of each other's presence. Daily, as I pedaled my bicycle through the city streets, I passed by her workplace, perhaps catching glimpses of each other through windows or doorways without knowing the significance. Then came that curious day when my GPS malfunctioned during a bike trip, redirecting me from my intended path to a route meant for cars, ultimately guiding me near her home—as if some cosmic hand was rehearsing our future encounters. Even our families seemed to echo this predestined connection: her father bears the same name as mine, her brother's name Rommel resonates with my own Rovel, creating an uncanny mirror between our lives. And in yet another twist of serendipity, her brother goes by Rjay, identical to my best friend's name. 
+						<br><br>
+						When we finally connected online, discovering one fascinating detail after another about each other, these parallels began to reveal themselves like puzzle pieces falling into place. With each conversation, each shared interest and coincidence, we grew more certain that what some call the "red string of fate" had been quietly, patiently drawing us together all along—proving that sometimes, love doesn't just happen; it was always meant to be.         
+					</p>
+				</div>
+			</div>
+            
+            <!-- Page 2 -->
+            <div class="page" data-index="2">
+                <div class="page-content venue-page">
+                    <h2 class="page-title">SEREMONYA at RESEPYON</h2>
+					
+					<div class="title-divider">
+					<span class="heart-icon">❤</span>
+					</div>
+					
+					<div class="venue-carousel">
+                        <img src="venue1.jpg" alt="Venue photo 1" class="active">
+                        <img src="venue2.jpg" alt="Venue photo 2">
+                        <img src="venue3.jpg" alt="Venue photo 3">
+                        <img src="venue4.jpg" alt="Venue photo 4">
+                        <img src="venue5.jpg" alt="Venue photo 5">
+                        <img src="venue6.jpg" alt="Venue photo 6"> 
+                        <img src="venue7.jpg" alt="Venue photo 7"> 
+                        <!-- Add more images as needed -->
+                    </div>
+                    
+					<p class="page-text">Ang seremonya ng aming pag-iisang dibdib ay sa <b>Hulyo 12, 2025</b> (<b>Sabado</b>) at magsisimula nang <b>ganap na alas-7:30 ng umaga</b> sa <b>Tree House Mansion Events Place - Silang, Cavite</b></p><br>
+                    <p class="page-text">Pagkatapos ng seremonya, kayo ay inaanyayahang makiisa sa isang masayang <b>almusal</b> at kasiyahan sa <b>reception area</b> ng parehong lugar.</p><br>
+				    <p class="page-text">Magsalo tayo sa masarap na pagkain, tawanan, at mga alaala habang sinasalubong ang bagong yugto ng aming buhay—sa isang umagang punô ng pag-ibig at ligaya!</p>
+				</div>
+            </div>
+            
+            <!-- Page 3 -->
+            <div class="page" data-index="3">
+                <div class="page-content">
+                    <h2 class="page-title"><b>LOKASYON</b></h2>
+					<div class="title-divider">
+					<span class="heart-icon">❤</span>
+					</div>
+					<p class="page-text" style="font-size:20px;"><b>Tree House Mansion Events Place</b></p>
+					
+					<p style="font-style: normal; margin-bottom: 10px; color: #42312b;">
+					Lalaan II, Leynes Street,<br> Silang, Cavite 4118
+					</p>
+					
+					<p style="font-style: italic; margin-bottom: 10px; color: #42312b; font-size:13px;">
+					(nasa kahabaan ng Aguinaldo Highway)<br><br>
+					</p>
+					
+					<p class="page-text">Para sa mga dadalo gamit ang sasakyan, motorsiklo, o anumang uri ng transportasyon, may nakalaang paradahan sa venue simula <b>alas-7:00 ng umaga</b>.</p><br>
+                    <div class="map-container" style="width: 100%; height: 65%; overflow: auto; margin-bottom: 10px; border-radius: 5px;">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d483.5834493369961!2d120.95569825944891!3d14.155629738034332!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd79ece93ecc2f%3A0x120f4b67dc31fbe2!2sTree%20House%20Mansion!5e0!3m2!1sen!2sph!4v1746068286399!5m2!1sen!2sph" 
+                        width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+					</div>
+					
+                </div>
+            </div>
+            
+			<!-- Page 4 - Wedding Motif -->
+			<div class="page" data-index="4">
+				<div class="page-content">
+					<h2 class="page-title">GAYAK AT KULAY</h2>
+					<div class="title-divider">
+						<span class="heart-icon">❤</span>
+					</div>
+					<div style="width: 100%; max-height: 75%; overflow-y: auto; margin-bottom: 10px; padding: 0 5px;">
+						<div style="text-align: center; margin-bottom: 15px;">
+							<p style="font-style: italic; margin-bottom: 10px; color: #42312b; font-size: 13px;">
+								Kami po ay buong paggalang na humihiling ng inyong pakikiisa sa pagsunod sa itinakdang pamantayan ng pananamit para sa espesyal na okasyong ito.<br><br>
+								Bilang isang pormal na pagtitipon, malugod naming hinihikayat ang pagsusuot ng maayos at angkop na kasuotan na nagpapakita ng karangalan sa kahalagahan ng aming pagdiriwang.<br><br>
+								Maaari lamang po na iwasan ang pagsusuot ng maong na pantalon at tsinelas. Ang inyong pag-unawa at pakikiisa sa alituntuning ito ay lubos naming pinahahalagahan at pinasasalamatan.<br><br>
+								
+							</p>
+						</div>
+						
+						<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+							<div style="width: 48%; text-align: center;">
+								<h3 style="font-size: 16px; margin-bottom: 5px; color: #42312b;">Ninang</h3>
+								<p style="color: #42312b; margin: 0; font-size: 14px;">Filipiniana</p>
+								<p style="color: #42312b; margin: 0; font-size: 14px;">Modern Filipiniana</p>
+							</div>
+							<div style="width: 48%; text-align: center;">
+								<h3 style="font-size: 16px; margin-bottom: 5px; color: #42312b;">Ninong</h3>
+								<p style="color: #42312b; margin: 0; font-size: 14px;">Barong Tagalog</p>
+								<p style="color: #42312b; margin: 0; font-size: 14px;">Itim na Pantalon</p>
+							</div>
+						</div>
+						
+						<h3 style="font-size: 18px; text-align: center; margin-bottom: 10px; color: #42312b;">Kaibigan at Pamilya</h3>
+						
+						<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+							<div style="width: 48%; text-align: center;">
+								<h3 style="font-size: 16px; margin-bottom: 5px; color: #42312b;">Binibini</h3>
+								<p style="color: #42312b; margin: 0; font-size: 14px;">Filipiniana</p>
+								<p style="color: #42312b; margin: 0; font-size: 14px;">Modern Filipiniana</p>
+							</div>
+							<div style="width: 48%; text-align: center;">
+								<h3 style="font-size: 16px; margin-bottom: 5px; color: #42312b;">Ginoo</h3>
+								<p style="color: #42312b; margin: 0; font-size: 14px;">Barong o Polo</p>
+							</div>
+						</div>
+						
+						<p style="font-style: italic; margin-bottom: 10px; color: #42312b; font-size: 13px;">
+								Hindi naman po ito kinakailangan, subalit ikagagalak naming lubos kung makikisali po kayo sa diwa ng aming pagdiriwang sa pamamagitan ng pagsusuot ng kasuotang angkop sa kulay ng aming kasal.<br>
+						</p>
+						
+						<div style="text-align: center; margin-bottom: 15px;">
+							<h3 style="font-size: 16px; margin-bottom: 5px; color: #42312b;">Gabay sa Kulay</h3>
+						</div>
+						
+						<div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 5px;">
+							<div style="display: flex; flex-direction: column; align-items: center;">
+								<div style="width: 80px; height: 80px; border-radius: 50%; background-color: #F5F5DC;"></div>
+								<p style="font-size: 12px; margin-top: 5px; color: #42312b;">Beige</p>
+							</div>
+							<div style="display: flex; flex-direction: column; align-items: center;">
+								<div style="width: 80px; height: 80px; border-radius: 50%; background-color: #E1BE9B;"></div>
+								<p style="font-size: 12px; margin-top: 5px; color: #42312b;">Sand</p>
+							</div>
+							<div style="display: flex; flex-direction: column; align-items: center;">
+								<div style="width: 80px; height: 80px; border-radius: 50%; background-color: #D69264;"></div>
+								<p style="font-size: 12px; margin-top: 5px; color: #42312b;">Caramel</p>
+							</div>
+						</div>
+						<div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 15px;">
+							<div style="display: flex; flex-direction: column; align-items: center;">
+								<div style="width: 80px; height: 80px; border-radius: 50%; background-color: #DEC2AF;"></div>
+								<p style="font-size: 12px; margin-top: 5px; color: #42312b;">Almond</p>
+							</div>
+							<div style="display: flex; flex-direction: column; align-items: center;">
+								<div style="width: 80px; height: 80px; border-radius: 50%; background-color: #A0A088;"></div>
+								<p style="font-size: 12px; margin-top: 5px; color: #42312b;">Sage</p>
+							</div>
+							<div style="display: flex; flex-direction: column; align-items: center;">
+								<div style="width: 80px; height: 80px; border-radius: 50%; background-color: #747C70;"></div>
+								<p style="font-size: 12px; margin-top: 5px; color: #42312b;">Olive</p>
+							</div>
+						</div>
+						
+						<div style="text-align: center;">
+							<a href="#" class="gallery-link" id="openGallery">Mga Tema at Kulay</a>
+						</div>
+											
+							<h3 style="font-size: 18px; text-align: center; margin: 20px 0 10px 0; color: #42312b;"></h3>
+							
+							<!-- Row 1 -->
+							<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+								<div style="width: 48%; text-align: center;">
+									<img src="motifbeige.jpg" alt="Rustic Filipiniana" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Classic Beige Filipiniana</p>
+								</div>
+								<div style="width: 48%; text-align: center;">
+									<img src="motif2.jpg" alt="Modern Barong" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Terracotta Barong</p>
+								</div>
+							</div>
+							
+							<!-- Row 2 -->
+							<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+								<div style="width: 48%; text-align: center;">
+									<img src="motifsand.jpg" alt="Modern Filipiniana" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Modern Filipiniana</p>
+								</div>
+								<div style="width: 48%; text-align: center;">
+									<img src="motif4.jpg" alt="Sand Tone Outfit" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Sand Tone Ensemble</p>
+								</div>
+							</div>
+							
+							<!-- Row 3 -->
+							<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+								<div style="width: 48%; text-align: center;">
+									<img src="motifsand1.jpg" alt="Caramel Dress" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Caramel Filipiniana</p>
+								</div>
+								<div style="width: 48%; text-align: center;">
+									<img src="motif1.jpg" alt="Almond Barong" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Almond Barong</p>
+								</div>
+							</div>
+							
+							<!-- Row 4 -->
+							<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+								<div style="width: 48%; text-align: center;">
+									<img src="motifcaramel.jpg" alt="Sage Gown" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Sage Green Gown</p>
+								</div>
+								<div style="width: 48%; text-align: center;">
+									<img src="motif3.jpg" alt="Olive Outfit" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Olive Barong</p>
+								</div>
+							</div>
+							
+							<!-- Row 5 -->
+							<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+								<div style="width: 48%; text-align: center;">
+									<img src="motif4.jpg" alt="Terracotta Dress" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Terracotta Gown</p>
+								</div>
+								<div style="width: 48%; text-align: center;">
+									<img src="motif5.jpg" alt="Beige Barong" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Beige Barong</p>
+								</div>
+							</div>
+							
+							<!-- Row 6 -->
+							<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+								<div style="width: 48%; text-align: center;">
+									<img src="motifsage.jpg" alt="Rustic Centerpiece" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Rustic Table Setting</p>
+								</div>
+								<div style="width: 48%; text-align: center;">
+									<img src="motif2.jpg" alt="Bridal Bouquet" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Terracotta Bouquet</p>
+								</div>
+							</div>
+							
+							<!-- Row 7 -->
+							<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+								<div style="width: 48%; text-align: center;">
+									<img src="motifolive.jpg" alt="Color Palette" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Color Palette</p>
+								</div>
+								<div style="width: 48%; text-align: center;">
+									<img src="motif1.jpg" alt="Bridal Entourage" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+									<p style="font-size: 12px; color: #42312b;">Entourage Style</p>
+								</div>
+							</div>
+							
+							<!-- Single centered image for Row 8 -->
+							<div style="text-align: center; margin-bottom: 15px;">
+								<img src="motif5.jpg" alt="Complete Look" style="width: 100%; max-width: 300px; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+								<p style="font-size: 12px; color: #42312b;">Complete Wedding Look</p>
+							</div>
+					
+						
+					</div>
+				</div>
+			</div>
+
+			<!-- Gallery Modal -->
+			<div class="gallery-modal" id="galleryModal">
+				<div class="gallery-content">
+					<button class="gallery-close" id="closeGallery">&times;</button>
+					
+					<div class="gallery-nav">
+						<button id="prevBtn">&lt;</button>
+						<button id="nextBtn">&gt;</button>
+					</div>
+					
+					<div class="gallery-slide">
+						<img src="motif1.jpg" alt="Filipiniana Style" class="active">
+						<img src="motif2.jpg" alt="Barong Style">
+						<img src="motif3.jpg" alt="Modern Filipiniana">
+						<img src="motif4.jpg" alt="Color Theme">
+						<img src="motif5.jpg" alt="Rustic Decor">
+						<img src="motifbeige.jpg" alt="Filipiniana Style">
+						<img src="motifsand.jpg" alt="Barong Style">
+						<img src="motifsand1.jpg" alt="Modern Filipiniana">
+						<img src="motifcaramel.jpg" alt="Color Theme">
+						<img src="motifsage.jpg" alt="Rustic Decor">
+						<img src="motifolive.jpg" alt="Rustic Decor">
+					</div>
+					
+					<div class="gallery-indicators" id="galleryIndicators">
+						<!-- Indicators will be added by JavaScript -->
+					</div>
+				</div>
+			</div>
+			
+            <!-- Page 5 - Bridal Entourage (MOVED INSIDE BOOK CONTAINER) -->
+			<div class="page" data-index="5">
+				<div class="page-content">
+					<h2 class="page-title">Mga Gabay at Abay</h2>
+					<div class="title-divider">
+					<span class="heart-icon">❤</span>
+					</div>
+					<div style="width: 100%; max-height: 80%; overflow-y: auto; margin-bottom: 10px; padding: 0 5px;">
+						<div class="entourage-container" style="display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 2;">
+							<div class="entourage-center" style="text-align: center; width: 100%; margin: 5px 0; position: relative; z-index: 2;">
+								<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Mahal naming mga Magulang</h3>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Roberto S. Aguil at Melba S. Aguil</p>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Roberto D. Herona Jr. at Avelina G. Herona</p>
+							</div>
+						
+						
+							<div class="entourage-row" style="display: flex; justify-content: space-between; width: 100%; position: relative; z-index: 2;">
+								<div class="entourage-item" style="width: 48%; text-align: center;">
+									<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Punong Ginoo</h3>
+									<p style="font-size: 14px; margin: 0; color: #42312b;">Russell Jayson M. Jose</p>
+								</div>
+								<div class="entourage-item" style="width: 48%; text-align: center;">
+									<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Binibining Pandangal</h3>
+									<p style="font-size: 14px; margin: 0; color: #42312b;">Che Aguil-De Guzman</p>
+								</div>
+							</div>
+							
+							<div class="entourage-center" style="text-align: center; width: 100%; margin: 5px 0; position: relative; z-index: 2;">
+								<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Abay</h3>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Jon Eshan Titus P. Aguil</p>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Tyrael James C. Herona</p>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Vaughn Jeremiah H. Botaire</p>
+
+							</div>
+							
+							<div class="entourage-row" style="display: flex; justify-content: space-between; width: 100%; position: relative; z-index: 2;">
+								<div class="entourage-item" style="width: 48%; text-align: center;">
+									<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Ring Bearer</h3>
+									<p style="font-size: 14px; margin: 0; color: #42312b;">-</p>
+								</div>
+								<div class="entourage-item" style="width: 48%; text-align: center;">
+									<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Coin Bearer</h3>
+									<p style="font-size: 14px; margin: 0; color: #42312b;">-</p>
+								</div>
+							</div>
+							
+							<div class="entourage-row" style="display: flex; justify-content: space-between; width: 100%; position: relative; z-index: 2;">
+								<div class="entourage-item" style="width: 48%; text-align: center;">
+									<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Bible Bearer</h3>
+									<p style="font-size: 14px; margin: 0; color: #42312b;">-</p>
+								</div>
+								<div class="entourage-item" style="width: 48%; text-align: center;">
+									<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Viel</h3>
+									<p style="font-size: 14px; margin: 0; color: #42312b;">-</p>
+								</div>
+							</div>
+							
+							<div class="entourage-row" style="display: flex; justify-content: space-between; width: 100%; position: relative; z-index: 2;">
+								<div class="entourage-item" style="width: 48%; text-align: center;">
+									<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Cord</h3>
+									<p style="font-size: 14px; margin: 0; color: #42312b;">-</p>
+								</div>
+								<div class="entourage-item" style="width: 48%; text-align: center;">
+									<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Candle</h3>
+									<p style="font-size: 14px; margin: 0; color: #42312b;">-</p>
+								</div>
+							</div>
+							
+							<div class="entourage-center" style="text-align: center; width: 100%; margin: 5px 0; position: relative; z-index: 2;">
+								<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Flower Girls</h3>
+                                <p style="font-size: 14px; margin: 2px 0; color: #42312b;">Elyzia Snoe P. Aguil</p>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Klynn Alexeen C. Nacar</p>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Ma. Samantha Claire H. Botaire</p>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Mitchel Maries M. Correa</p>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Naomi Beatrix Aguil-De Guzman</p>
+								<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Reeane Chesney P. Aguil</p>
+
+							</div>
+							
+							<div class="entourage-sponsors" style="width: 100%; text-align: center; margin-top: 10px; position: relative; z-index: 2;">
+								<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Mga Ninong at Ninang</h3>
+								<div class="sponsors-columns" style="display: flex; justify-content: center; gap: 30px; position: relative;">
+									<div class="sponsors-column" style="text-align: left;">
+										<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Mr. Edward S. Ponti</p>
+										<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Mr. Bernard T. Arcilla</p>
+										<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Mr. Rico Mayo</p>
+										<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Mr. Sonny Jastillana</p>
+									</div>
+									<div class="sponsors-column" style="text-align: left;">
+										<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Mrs. Nelda M. Jose</p>
+										<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Mrs. Nestie D. Ponti</p>
+										<p style="font-size: 14px; margin: 2px 0; color: #42312b;">Mrs. Bernard T. Arcilla</p>
+										<p style="font-size: 14px; margin: 2px 0; color: #42312b;"></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>		
+			
+			<!-- Page 6 -->
+            <div class="page" data-index="3">
+                <div class="page-content">
+                    <h2 class="page-title"><b>MGA LARAWAN</b></h2>
+					<div class="title-divider">
+					<span class="heart-icon">❤</span>
+					</div>
+					<div style="width: 100%; height: 80%; overflow-y: auto; padding: 0 15px;">
+					<p class="page-text">
+					Hinihikayat po namin kayo na kumuha ng maraming larawan sa araw ng aming kasal.<br>
+					Upang maibahagi ang mga espesyal na sandaling ito, maaari ninyong i-upload ang inyong mga kuha sa aming Google Drive link:<br>
+					<a href="https://drive.google.com/drive/folders/1RoRqOeq_wrZ2m97QACf6EscjM9rYk6fF?usp=sharing">Mga Larawan</a><br>
+					<img src="gdriveQR.jpeg" alt="Google Drive QR" style="width: 80%; height: 150px; border-radius: 5px; margin-bottom: 5px; margin-top: 5px;align: center; object-fit: contain;"><br>
+					Ito ang pinakamabisang paraan upang makolekta at mapangalagaan ang lahat ng magagandang alaala mula sa aming espesyal na araw.
+					</p><br>
+					
+					<p class="page-text">
+						Narito ang simpleng gabay kung paano i-upload ang inyong mga larawan sa aming Google Drive. Sinubukan naming gawing madali ito para sa lahat, may kasamang mga larawan para sa bawat hakbang.
+					</p><br>
+					
+					<p class="page-text">
+					Para sa mga Gumagamit ng Smartphone <br>
+					</p>
+					
+					<p class="page-text">
+					Opsyon 1: Gamit ang Google Drive App
+					</p>
+
+					<div class="step-container">
+						<div class="step">
+							<div class="step-number">1</div>
+							<div class="step-content">
+								<p><strong>I-download ang Google Drive app</strong> kung wala pa ito sa inyong telepono</p>
+								<ul>
+									<li>Para sa Android: Pumunta sa Google Play Store</li>
+									<li>Para sa iPhone: Pumunta sa App Store</li>
+								</ul>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Google Drive app sa Play Store at App Store">
+								</div>
+							</div>
+						</div>
+						
+						<div class="step">
+							<div class="step-number">2</div>
+							<div class="step-content">
+								<p><strong>Buksan ang app at mag-sign in</strong> gamit ang inyong Google account</p>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Google Drive login screen">
+								</div>
+							</div>
+						</div>
+						
+						<div class="step">
+							<div class="step-number">3</div>
+							<div class="step-content">
+								<p><strong>Hanapin ang aming shared folder</strong></p>
+								<ul>
+									<li>I-tap ang link na ibinigay namin: [LINK SA AMING GOOGLE DRIVE]</li>
+									<li>O buksan ang Google Drive app at hanapin ang folder sa "Shared with me" section</li>
+								</ul>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Shared with me section sa Google Drive">
+								</div>
+							</div>
+						</div>
+						
+						<div class="step">
+							<div class="step-number">4</div>
+							<div class="step-content">
+								<p><strong>Mag-upload ng mga larawan</strong></p>
+								<ul>
+									<li>I-tap ang "+" button sa ibaba ng screen</li>
+									<li>Piliin ang "Upload"</li>
+									<li>Piliin ang mga larawang nais ninyong i-share</li>
+									<li>I-tap ang "Upload" button</li>
+								</ul>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Upload button sa Google Drive app">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<h3>Opsyon 2: Gamit ang Web Browser sa Smartphone</h3>
+
+					<div class="step-container">
+						<div class="step">
+							<div class="step-number">1</div>
+							<div class="step-content">
+								<p><strong>Buksan ang web browser</strong> (Chrome, Safari, atbp.)</p>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Browser icons sa smartphone">
+								</div>
+							</div>
+						</div>
+						
+						<div class="step">
+							<div class="step-number">2</div>
+							<div class="step-content">
+								<p><strong>Pumunta sa link</strong> na ibinigay namin: [LINK SA AMING GOOGLE DRIVE]</p>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Google Drive link sa browser">
+								</div>
+							</div>
+						</div>
+						
+						<div class="step">
+							<div class="step-number">3</div>
+							<div class="step-content">
+								<p><strong>Mag-sign in</strong> sa inyong Google account kung hiniling</p>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Google sign-in page">
+								</div>
+							</div>
+						</div>
+						
+						<div class="step">
+							<div class="step-number">4</div>
+							<div class="step-content">
+								<p><strong>I-tap ang "+" button</strong> sa ibaba ng screen</p>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Plus button sa Google Drive mobile web">
+								</div>
+							</div>
+						</div>
+						
+						<div class="step">
+							<div class="step-number">5</div>
+							<div class="step-content">
+								<p><strong>Piliin ang "Upload files"</strong> at hanapin ang mga larawan sa inyong telepono</p>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Upload files option sa Google Drive">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<h2>Para sa mga Gumagamit ng Computer</h2>
+
+					<div class="step-container">
+						<div class="step">
+							<div class="step-number">1</div>
+							<div class="step-content">
+								<p><strong>Buksan ang web browser</strong> (Chrome, Firefox, Safari, atbp.)</p>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Browser icons sa computer">
+								</div>
+							</div>
+						</div>
+						
+						<div class="step">
+							<div class="step-number">2</div>
+							<div class="step-content">
+								<p><strong>Pumunta sa link</strong> na ibinigay namin: [LINK SA AMING GOOGLE DRIVE]</p>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Google Drive link sa browser">
+								</div>
+							</div>
+						</div>
+						
+						<div class="step">
+							<div class="step-number">3</div>
+							<div class="step-content">
+								<p><strong>Mag-sign in</strong> sa inyong Google account kung hiniling</p>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Google sign-in page sa desktop">
+								</div>
+							</div>
+						</div>
+						
+						<div class="step">
+							<div class="step-number">4</div>
+							<div class="step-content">
+								<p><strong>Mag-upload ng mga larawan</strong></p>
+								<ul>
+									<li>I-click ang "New" button sa upper left</li>
+									<li>Piliin ang "File upload"</li>
+									<li>O kaya ay i-drag and drop ang mga file mula sa inyong computer papunta sa browser window</li>
+								</ul>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="New button at dropdown menu sa Google Drive">
+								</div>
+								<div class="step-image">
+									<img src="/api/placeholder/300/200" alt="Drag and drop files sa Google Drive">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="faq">
+						<h2>Mga Madalas na Katanungan</h2>
+						
+						<p class="question">Hindi ako makapasok sa folder. Ano ang dapat kong gawin?</p>
+						<p>- Siguraduhing naka-sign in kayo sa inyong Google account<br>
+						- Kung hindi pa rin makapasok, mangyaring makipag-ugnayan sa amin</p>
+						
+						<p class="question">Gaano karaming larawan ang maaari kong i-upload?</p>
+						<p>- Maaari kayong mag-upload ng kahit ilang larawan ninyo mula sa kasal</p>
+						
+						<p class="question">Kailangan ko bang pangalanan ang mga file?</p>
+						<p>- Hindi na kailangan, pero kung gusto ninyo, maaari ninyong pangalanan ang mga file para makilala kung sino ang nag-upload</p>
+					</div>
+
+					<div class="note">
+						<p>Paalala: Siguraduhing nasa magandang internet connection kayo lalo na kung maraming larawan ang inyong i-a-upload.</p>
+					</div>
+
+					<div class="footer">
+						<p>Maraming salamat sa inyong pakikiisa at sa pagbabahagi ng mga alaala mula sa aming espesyal na araw!</p><br>
+						<p>Para sa anumang mga katanungan, mangyaring makipag-ugnayan kay [PANGALAN] sa [CONTACT INFO].</p>
+					</div>
+					</div>
+					
+                </div>
+            </div>
+			
+			
+            <!-- Page 7 -->
+			<div class="page" data-index="6">
+				<div class="page-content">
+					<h2 class="page-title">RSVP</h2>
+					<div class="title-divider">
+						<span class="heart-icon">❤</span>
+					</div>
+				<div style="width: 100%; height: 80%; overflow-y: auto; padding: 0 15px;">
+                    <p class="page-text">
+					Kung maaari po ay magbigay ng kumpirmasyon ng inyong pagdalo sa <br><b>ika-30 ng Hunyo 2025</b>.<br><br>
+					Para sa anumang katanungan o karagdagang impormasyon, maaari po ninyo kaming makontak sa:<br>rovel.herona@gmail.com | +63 912 345 6789<br>claireaugil@gmail.com | +63 912 345 6789<br><br>
+					Ang inyong panalangin at presensya lamang po ang aming hiling sa araw ng aming pag-iisang dibdib.<br>
+					Ngunit kung nais pa rin po ninyong magbahagi ng biyaya, higit po naming pahahalagahan ang regalong pinansyal.
+					Maaari po ninyo itong ipadala sa pamamagitan ng mga sumusunod na detalye:<br><br> 
+					</p>
+					<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+					<div style="width: 48%; text-align: center;">
+					<img src="gcashQR.jpg" alt="Color Palette" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+					<p style="font-size: 12px; color: #42312b; font-weight: bold;">
+					GCash<br>
+					Rovel Herona<br>
+					0912 456 7890
+					</p>
+					</div>
+					<div style="width: 48%; text-align: center;">
+					<img src="mayaQR.jpg" alt="Color Palette" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 5px;">
+					<p style="font-size: 12px; color: #42312b; font-weight: bold;">
+					Maya<br>
+					Rovel Herona<br>
+					0912 456 7890
+					</p>
+					</div>
+					
+					</div>
+				    
+				</div>
+				</div>
+				
+				</div>
+			</div>
+		</div>
+    
+    <div class="page-indicators">
+        <div class="indicator active" data-index="0"></div>
+        <div class="indicator" data-index="1"></div>
+        <div class="indicator" data-index="2"></div>
+        <div class="indicator" data-index="3"></div>
+        <div class="indicator" data-index="4"></div>
+        <div class="indicator" data-index="5"></div>
+        <div class="indicator" data-index="6"></div>
+		<div class="indicator" data-index="7"></div>
+    </div>
+    
+
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pages = document.querySelectorAll('.page');
+            const indicators = document.querySelectorAll('.indicator');
+            let currentPageIndex = 0;
+            let touchStartX = 0;
+            let touchEndX = 0;
+            let isAnimating = false;
+            
+            // Initialize
+            updateIndicators();
+            
+            // Use passive event listeners for better performance
+            document.addEventListener('touchstart', handleTouchStart, { passive: true });
+            document.addEventListener('touchmove', handleTouchMove, { passive: true });
+            document.addEventListener('touchend', handleTouchEnd, { passive: true });
+            
+            // For desktop testing
+            document.addEventListener('mousedown', handleMouseDown, { passive: true });
+            document.addEventListener('mousemove', handleMouseMove, { passive: true });
+            document.addEventListener('mouseup', handleMouseUp, { passive: true });
+            
+            // Indicators click event with debounce
+            const indicatorDebounceTime = 300;
+            let lastIndicatorClick = 0;
+            
+            indicators.forEach(indicator => {
+                indicator.addEventListener('click', () => {
+                    const now = Date.now();
+                    if (now - lastIndicatorClick < indicatorDebounceTime) return;
+                    lastIndicatorClick = now;
+                    
+                    if (isAnimating) return;
+                    
+                    const targetIndex = parseInt(indicator.getAttribute('data-index'));
+                    if (targetIndex === currentPageIndex) return;
+                    
+                    if (targetIndex > currentPageIndex) {
+                        navigateToPage(targetIndex);
+                    } else {
+                        navigateToPage(targetIndex);
+                    }
+                });
+            });
+            
+            // Optimized navigation to page
+            function navigateToPage(targetIndex) {
+                if (targetIndex === currentPageIndex) return;
+                
+                // We'll use requestAnimationFrame for smoother animations
+                if (targetIndex > currentPageIndex) {
+                    // Going forward one page at a time
+                    turnPage(true);
+                    
+                    if (targetIndex > currentPageIndex + 1) {
+                        // Schedule the next page turn
+                        setTimeout(() => {
+                            navigateToPage(targetIndex);
+                        }, 600);
+                    }
+                } else {
+                    // Going backward one page at a time
+                    turnPage(false);
+                    
+                    if (targetIndex < currentPageIndex - 1) {
+                        // Schedule the next page turn
+                        setTimeout(() => {
+                            navigateToPage(targetIndex);
+                        }, 600);
+                    }
+                }
+            }
+            
+            // Touch event handlers
+			function handleTouchStart(e) {
+				if (galleryModal.style.display === 'flex') return;
+				touchStartX = e.touches[0].clientX;
+			}
+
+			function handleTouchMove(e) {
+				if (galleryModal.style.display === 'flex') return;
+				touchEndX = e.touches[0].clientX;
+			}
+
+			function handleTouchEnd() {
+				if (galleryModal.style.display === 'flex') return;
+				handleSwipe();
+			}
+
+			// Mouse event handlers (for desktop testing)
+			let isMouseDown = false;
+
+			function handleMouseDown(e) {
+				if (galleryModal.style.display === 'flex') return;
+				isMouseDown = true;
+				touchStartX = e.clientX;
+			}
+
+			function handleMouseMove(e) {
+				if (galleryModal.style.display === 'flex') return;
+				if (isMouseDown) {
+					touchEndX = e.clientX;
+				}
+			}
+
+			function handleMouseUp() {
+				if (galleryModal.style.display === 'flex') return;
+				if (isMouseDown) {
+					handleSwipe();
+					isMouseDown = false;
+				}
+			}
+            
+            // Optimized swipe handler with debounce
+            let lastSwipeTime = 0;
+            const swipeDebounceTime = 300;
+            
+            function handleSwipe() {
+                const now = Date.now();
+                if (now - lastSwipeTime < swipeDebounceTime) return;
+                lastSwipeTime = now;
+                
+                if (isAnimating) return;
+                
+                const swipeThreshold = 50;
+                const swipeDistance = touchEndX - touchStartX;
+                
+                if (swipeDistance < -swipeThreshold) {
+                    // Swipe left - go to next page
+                    if (currentPageIndex < pages.length - 1) {
+                        requestAnimationFrame(() => turnPage(true));
+                    }
+                } else if (swipeDistance > swipeThreshold) {
+                    // Swipe right - go to previous page
+                    if (currentPageIndex > 0) {
+                        requestAnimationFrame(() => turnPage(false));
+                    }
+                }
+            }
+            
+            function turnPage(forward) {
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                const currentPage = pages[currentPageIndex];
+                
+                if (forward) {
+                    // Going to next page
+                    const nextPageIndex = currentPageIndex + 1;
+                    if (nextPageIndex >= pages.length) {
+                        isAnimating = false;
+                        return;
+                    }
+                    
+                    const nextPage = pages[nextPageIndex];
+                    
+                    // Make next page visible before animation
+                    nextPage.style.visibility = 'visible';
+                    
+                    currentPage.classList.add('flipping');
+                    
+                    setTimeout(() => {
+                        currentPage.classList.remove('active');
+                        nextPage.classList.add('active');
+                        
+                        setTimeout(() => {
+                            currentPage.classList.remove('flipping');
+                            currentPage.style.visibility = 'hidden';
+                            currentPageIndex = nextPageIndex;
+                            updateIndicators();
+                            isAnimating = false;
+                        }, 300);
+                    }, 300);
+                } else {
+                    // Going to previous page
+                    const prevPageIndex = currentPageIndex - 1;
+                    if (prevPageIndex < 0) {
+                        isAnimating = false;
+                        return;
+                    }
+                    
+                    const prevPage = pages[prevPageIndex];
+                    
+                    // Make previous page visible before animation
+                    prevPage.style.visibility = 'visible';
+                    prevPage.classList.add('active');
+                    prevPage.style.transform = 'rotateY(-130deg)';
+                    
+                    setTimeout(() => {
+                        prevPage.style.transform = '';
+                        
+                        setTimeout(() => {
+                            currentPage.classList.remove('active');
+                            currentPage.style.visibility = 'hidden';
+                            currentPageIndex = prevPageIndex;
+                            updateIndicators();
+                            isAnimating = false;
+                        }, 300);
+                    }, 50);
+                }
+            }
+            
+            function updateIndicators() {
+                indicators.forEach((indicator, index) => {
+                    if (index === currentPageIndex) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Image carousel for venue page
+            function setupVenueCarousel() {
+                const images = document.querySelectorAll('.venue-carousel img');
+                if (images.length <= 1) return;
+                
+                let currentImageIndex = 0;
+                
+                // Change image every 3 seconds
+                setInterval(() => {
+                    images[currentImageIndex].classList.remove('active');
+                    currentImageIndex = (currentImageIndex + 1) % images.length;
+                    images[currentImageIndex].classList.add('active');
+                }, 3000);
+            }
+
+            // Initialize carousel when page loads
+            setupVenueCarousel();
+			
+			// Gallery functionality - MOVED INSIDE DOMContentLoaded
+			const galleryModal = document.getElementById('galleryModal');
+			const openGalleryBtn = document.getElementById('openGallery');
+			const closeGalleryBtn = document.getElementById('closeGallery');
+			const prevBtn = document.getElementById('prevBtn');
+			const nextBtn = document.getElementById('nextBtn');
+			const galleryImages = document.querySelectorAll('.gallery-slide img');
+			const galleryIndicators = document.getElementById('galleryIndicators');
+			let currentGalleryIndex = 0;
+			
+			// Add touch-specific event listeners for mobile
+			openGalleryBtn.addEventListener('touchstart', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				galleryModal.style.display = 'flex';
+				document.body.style.overflow = 'hidden';
+			});
+
+			// Create indicators
+			galleryImages.forEach((_, index) => {
+				const indicator = document.createElement('div');
+				indicator.classList.add('gallery-indicator');
+				if (index === 0) indicator.classList.add('active');
+				indicator.dataset.index = index;
+				galleryIndicators.appendChild(indicator);
+			});
+
+			const indicatorDots = document.querySelectorAll('.gallery-indicator');
+
+			// Open gallery
+			// Enhanced click handler
+			openGalleryBtn.addEventListener('click', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				galleryModal.style.display = 'flex';
+				document.body.style.overflow = 'hidden';
+			});
+
+			// Close gallery
+			closeGalleryBtn.addEventListener('click', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				galleryModal.style.display = 'none';
+				document.body.style.overflow = '';
+			});
+
+			// Previous image
+			prevBtn.addEventListener('click', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				navigateGallery(-1);
+			});
+
+			// Next image
+			nextBtn.addEventListener('click', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				navigateGallery(1);
+			});
+
+			// Indicator click
+			indicatorDots.forEach(indicator => {
+				indicator.addEventListener('click', (e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					const targetIndex = parseInt(indicator.dataset.index);
+					goToGalleryImage(targetIndex);
+				});
+			});
+
+			// Keyboard navigation
+			document.addEventListener('keydown', (e) => {
+				if (galleryModal.style.display === 'flex') {
+					e.preventDefault();
+					if (e.key === 'ArrowLeft') {
+						navigateGallery(-1);
+					} else if (e.key === 'ArrowRight') {
+						navigateGallery(1);
+					} else if (e.key === 'Escape') {
+						galleryModal.style.display = 'none';
+						document.body.style.overflow = '';
+					}
+				}
+			});
+
+			// Prevent modal close when clicking inside
+			document.querySelector('.gallery-content').addEventListener('click', (e) => {
+				e.stopPropagation();
+			});
+
+			// Close when clicking outside content
+			galleryModal.addEventListener('click', (e) => {
+				if (e.target === galleryModal) {
+					e.preventDefault();
+					e.stopPropagation();
+					galleryModal.style.display = 'none';
+					document.body.style.overflow = '';
+				}
+			});
+
+			function navigateGallery(direction) {
+				const newIndex = (currentGalleryIndex + direction + galleryImages.length) % galleryImages.length;
+				goToGalleryImage(newIndex);
+			}
+
+			function goToGalleryImage(index) {
+				galleryImages[currentGalleryIndex].classList.remove('active');
+				indicatorDots[currentGalleryIndex].classList.remove('active');
+				
+				currentGalleryIndex = index;
+				
+				galleryImages[currentGalleryIndex].classList.add('active');
+				indicatorDots[currentGalleryIndex].classList.add('active');
+			}
+			
+			// Modified touch event handlers for page navigation
+			function handleTouchStart(e) {
+				if (galleryModal.style.display === 'flex') return;
+				// Store the target element
+				const touch = e.touches[0];
+				this.touchTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+				touchStartX = touch.clientX;
+			}
+
+			function handleTouchEnd() {
+				if (galleryModal.style.display === 'flex') return;
+				// Check if touch started and ended on gallery link
+				if (this.touchTarget && this.touchTarget.closest('#openGallery')) {
+					return;
+				}
+				handleSwipe();
+			}
+	
+			
+			
+        });
+			
+    </script>
+</body>
+</html>
