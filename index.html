@@ -455,12 +455,8 @@
 		.entourage-item {
 			width: 48%;
 			text-align: center;
-			transition: transform 0.3s ease;
 		}
-		
-		.entourage-item:hover {
-			transform: translateX(5px);
-		}
+	
 
 		.entourage-item h3 {
 			font-size: 16px;
@@ -582,6 +578,8 @@
 			font-size: 14px;
 			color: #5c3c35;
 		}
+		
+		
 		
 		/* Motif Image Hover */
 		.page[data-index="4"] img {
@@ -716,7 +714,7 @@
 
 		.gallery-link {
 			display: inline-block;
-			margin-top: 15px;
+			margin-top: 5px;
 			padding: 10px 20px;
 			background-color: #5c3c35;
 			color: #F8CDC0;
@@ -729,6 +727,26 @@
 		.gallery-link:hover {
 			background-color: #42312b;
 			transform: translateY(-2px);
+		}
+		
+		.gallery-caption {
+			position: absolute;
+			bottom: 50px;
+			left: 0;
+			width: 100%;
+			text-align: center;
+			color: white;
+			font-size: 18px;
+			text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+			padding: 10px;
+			background-color: rgba(0,0,0,0.3);
+			z-index: 2;
+			transition: opacity 0.5s ease-in-out;
+			opacity: 0;
+		}
+
+		.gallery-caption.active {
+			opacity: 1;
 		}
 		
 		/* Update color swatch styling */
@@ -846,6 +864,10 @@
 			box-sizing: border-box;
 		}
 		
+		.qr-link:active img {
+			transform: scale(1.05);
+		}
+		
     </style>
 </head>
 <body>
@@ -924,6 +946,7 @@
 					<div class="title-divider">
 					<span class="heart-icon">❤</span>
 					</div>
+					<div style="width: 100%; height: 100%; overflow-y: auto; padding: 0 15px;">
 					<p class="page-text" style="font-size:20px;"><b>Tree House Mansion Events Place</b></p>
 					
 					<p style="font-style: normal; margin-bottom: 10px; color: #42312b;">
@@ -935,9 +958,11 @@
 					</p>
 					
 					<p class="page-text">Para sa mga dadalo gamit ang sasakyan, motorsiklo, o anumang uri ng transportasyon, may nakalaang paradahan sa venue simula <b>alas-7:00 ng umaga</b>.</p><br>
-                    <div class="map-container" style="width: 100%; height: 65%; overflow: auto; margin-bottom: 10px; border-radius: 5px;">
+                    <div class="map-container">
                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d483.5834493369961!2d120.95569825944891!3d14.155629738034332!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd79ece93ecc2f%3A0x120f4b67dc31fbe2!2sTree%20House%20Mansion!5e0!3m2!1sen!2sph!4v1746068286399!5m2!1sen!2sph" 
                         width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+					</div>
+					
 					</div>
 					
                 </div>
@@ -950,7 +975,7 @@
 					<div class="title-divider">
 						<span class="heart-icon">❤</span>
 					</div>
-					<div style="width: 100%; max-height: 75%; overflow-y: auto; margin-bottom: 10px; padding: 0 5px;">
+					<div style="width: 100%; max-height: 100%; overflow-y: auto; margin-bottom: 10px; padding: 0 5px;">
 						<div style="text-align: center; margin-bottom: 15px;">
 							<p style="font-style: italic; margin-bottom: 10px; color: #42312b; font-size: 13px;">
 								Kami po ay buong paggalang na humihiling ng inyong pakikiisa sa pagsunod sa itinakdang pamantayan ng pananamit para sa espesyal na okasyong ito.<br><br>
@@ -1024,8 +1049,12 @@
 							</div>
 						</div>
 						
+						<p style="font-style: italic; margin-bottom: 10px; color: #42312b; font-size: 13px;">
+							Pindutin ang button sa ibaba upang makita ang mga halimbawa ng tema at kulay para sa mga kasuotan.
+						</p>
+						
 						<div style="text-align: center;">
-							<a href="#" class="gallery-link" id="openGallery">Mga Tema at Kulay</a>
+							<a href="#" class="gallery-link" id="openGallery">Mga Tema at Kulay ng Kasuotan</a>
 						</div>
 											
 							<h3 style="font-size: 18px; text-align: center; margin: 20px 0 10px 0; color: #42312b;"></h3>
@@ -1136,17 +1165,18 @@
 					</div>
 					
 					<div class="gallery-slide">
-						<img src="motif1.jpg" alt="Filipiniana Style" class="active">
-						<img src="motif2.jpg" alt="Barong Style">
-						<img src="motif3.jpg" alt="Modern Filipiniana">
-						<img src="motif4.jpg" alt="Color Theme">
-						<img src="motif5.jpg" alt="Rustic Decor">
-						<img src="motifbeige.jpg" alt="Filipiniana Style">
-						<img src="motifsand.jpg" alt="Barong Style">
-						<img src="motifsand1.jpg" alt="Modern Filipiniana">
-						<img src="motifcaramel.jpg" alt="Color Theme">
-						<img src="motifsage.jpg" alt="Rustic Decor">
-						<img src="motifolive.jpg" alt="Rustic Decor">
+						<img src="motif1.jpg" class="active" data-caption="Motif1">
+						<img src="motif2.jpg" data-caption="Motif11">
+						<img src="motif3.jpg" data-caption="Motif2">
+						<img src="motif4.jpg" data-caption="Motif3">
+						<img src="motif5.jpg" data-caption="Motif4">
+						<img src="motifbeige.jpg" data-caption="Motif5">
+						<img src="motifsand.jpg" data-caption="Motif6">
+						<img src="motifsand1.jpg" data-caption="Motif7">
+						<img src="motifcaramel.jpg" data-caption="Motif8">
+						<img src="motifsage.jpg" data-caption="Motif9">
+						<img src="motifolive.jpg" data-caption="Motif10">
+						<div class="gallery-caption"></div>
 					</div>
 					
 					<div class="gallery-indicators" id="galleryIndicators">
@@ -1162,7 +1192,7 @@
 					<div class="title-divider">
 					<span class="heart-icon">❤</span>
 					</div>
-					<div style="width: 100%; max-height: 75%; overflow-y: auto; margin-bottom: 10px; padding: 0 5px;">
+					<div style="width: 100%; max-height: 100%; overflow-y: auto; margin-bottom: 10px; padding: 0 5px;">
 						<div class="entourage-container" style="display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 2;">
 							<div class="entourage-center" style="text-align: center; width: 100%; margin: 5px 0; position: relative; z-index: 2;">
 								<h3 style="font-size: 16px; font-weight: bold; margin-bottom: 2px; color: #42312b; position: relative; text-shadow: 0 1px 1px rgba(255,255,255,0.4);">Mahal naming mga Magulang</h3>
@@ -1481,13 +1511,16 @@
 					<div class="title-divider">
 						<span class="heart-icon">❤</span>
 					</div>
-				<div style="width: 100%; height: 80%; overflow-y: auto; padding: 0 15px;">
+				<div style="width: 100%; height: 100%; overflow-y: auto; padding: 0 15px;">
                     <p class="page-text">
 					Kung maaari po ay magbigay ng kumpirmasyon ng inyong pagdalo sa <br><b>ika-30 ng Hunyo 2025</b>.<br><br>
 					Para sa anumang katanungan o karagdagang impormasyon, maaari po ninyo kaming makontak sa:<br>rovel.herona@gmail.com | +63 912 345 6789<br>claireaugil@gmail.com | +63 912 345 6789<br><br>
 					Ang inyong panalangin at presensya lamang po ang aming hiling sa araw ng aming pag-iisang dibdib.<br>
 					Ngunit kung nais pa rin po ninyong magbahagi ng biyaya, higit po naming pahahalagahan ang regalong pinansyal.
 					Maaari po ninyo itong ipadala sa pamamagitan ng mga sumusunod na detalye:
+					</p>
+					<p style="font-style: italic; margin-bottom: 10px; color: #42312b; font-size: 13px;">
+					Kapag nais po ninyong makita ang larawan nang mas malinaw o mas detalyado, maaari po niyong pindutin ang mga ito.
 					</p>
 					<div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
 						<div style="width: 48%; text-align: center;">
@@ -1758,6 +1791,7 @@
 			const nextBtn = document.getElementById('nextBtn');
 			const galleryImages = document.querySelectorAll('.gallery-slide img');
 			const galleryIndicators = document.getElementById('galleryIndicators');
+			
 			let currentGalleryIndex = 0;
 			
 			// Add touch-specific event listeners for mobile
@@ -1786,6 +1820,12 @@
 				e.stopPropagation();
 				galleryModal.style.display = 'flex';
 				document.body.style.overflow = 'hidden';
+				
+				// Initialize caption from data-caption attribute
+				const caption = galleryImages[currentGalleryIndex].getAttribute('data-caption');
+				const captionElement = document.querySelector('.gallery-caption');
+				captionElement.textContent = caption;
+				captionElement.classList.add('active');
 			});
 
 			// Close gallery
@@ -1849,6 +1889,23 @@
 				}
 			});
 			
+			function goToGalleryImage(index) {
+				galleryImages[currentGalleryIndex].classList.remove('active');
+				indicatorDots[currentGalleryIndex].classList.remove('active');
+				
+				currentGalleryIndex = index;
+				
+				galleryImages[currentGalleryIndex].classList.add('active');
+				indicatorDots[currentGalleryIndex].classList.add('active');
+				
+				// Update caption from data-caption attribute
+				const caption = galleryImages[currentGalleryIndex].getAttribute('data-caption');
+				const captionElement = document.querySelector('.gallery-caption');
+				captionElement.textContent = caption;
+				captionElement.classList.remove('active');
+				setTimeout(() => captionElement.classList.add('active'), 50);
+			}
+			
 			// QR Code functionality
 			const qrModal = document.getElementById('qrModal');
 			const closeQRBtn = document.getElementById('closeQR');
@@ -1898,16 +1955,6 @@
 			function navigateGallery(direction) {
 				const newIndex = (currentGalleryIndex + direction + galleryImages.length) % galleryImages.length;
 				goToGalleryImage(newIndex);
-			}
-
-			function goToGalleryImage(index) {
-				galleryImages[currentGalleryIndex].classList.remove('active');
-				indicatorDots[currentGalleryIndex].classList.remove('active');
-				
-				currentGalleryIndex = index;
-				
-				galleryImages[currentGalleryIndex].classList.add('active');
-				indicatorDots[currentGalleryIndex].classList.add('active');
 			}
 			
 			// Modified touch event handlers for page navigation
