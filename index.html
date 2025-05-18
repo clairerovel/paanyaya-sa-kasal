@@ -168,17 +168,31 @@
 			height: 185px;  /* Reduced height */
 			border: none;
 		}
+		
+		.gallery-map {
+			position: absolute;
+			top: 85%;  /* Changed from bottom to top */
+			left: 25%;  /* Changed from centered to left-aligned */
+			transform: none;  /* Removed the centering transform */
+		}
 
 		@media (max-width: 768px) {
 			.map-container {
 				top: 10%;
-				left: 5%;
+				left: 17%;
 				width: 50%;
 				max-width: 250px;
 			}
 			
 			.map-container iframe {
 				height: 150px;
+			}
+			
+			.gallery-map {
+				position: absolute;
+				top: 85%;  /* Changed from bottom to top */
+				left: 25%;  /* Changed from centered to left-aligned */
+				transform: none;  /* Removed the centering transform */
 			}
 		}
 		
@@ -341,6 +355,8 @@
 			pointer-events: auto;
 		}
 		
+		
+		
         
 
     </style>
@@ -402,8 +418,7 @@
                    <img src="6.png" alt="Page 6" class="cover-image" loading="lazy" width="1240" height="1748">
                 </div>
 				
-				<div style="text-align: center;">
-					<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+				<div style="text-align: center;" class="gallery-map">
 					<a href="#" class="gallery-link" id="openGallery">Mga Tema at Kulay ng Kasuotan</a>
 				</div>
             </div>
