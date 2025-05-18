@@ -171,8 +171,8 @@
 
 		@media (max-width: 768px) {
 			.map-container {
-				top: 8%;
-				left: 25%;
+				top: 10%;
+				left: 5%;
 				width: 50%;
 				max-width: 250px;
 			}
@@ -180,6 +180,165 @@
 			.map-container iframe {
 				height: 150px;
 			}
+		}
+		
+		/* Gallery Modal Styles */
+		.gallery-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0,0,0,0.9);
+			z-index: 1000;
+			overflow: hidden;
+		}
+
+		.gallery-content {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.gallery-slide {
+			width: 90%;
+			height: 80%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.gallery-slide img {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+			border-radius: 5px;
+			position: absolute;
+			opacity: 0;
+			transition: opacity 0.5s ease-in-out;
+		}
+		
+		.gallery-slide img.active {
+			opacity: 1;
+			z-index: 1;
+		}
+
+		.gallery-nav {
+			position: absolute;
+			top: 50%;
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			padding: 0 20px;
+			transform: translateY(-50%);
+			z-index: 10;
+		}
+
+		.gallery-nav button {
+			background: rgba(248, 205, 192, 0.7);
+			border: none;
+			color: #42312b;
+			font-size: 24px;
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			cursor: pointer;
+			transition: all 0.3s;
+		}
+
+		.gallery-nav button:hover {
+			background: rgba(248, 205, 192, 0.9);
+		}
+
+		.gallery-close {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			background: rgba(248, 205, 192, 0.7);
+			border: none;
+			color: #42312b;
+			font-size: 24px;
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			cursor: pointer;
+			transition: all 0.3s;
+		}
+
+		.gallery-close:hover {
+			background: rgba(248, 205, 192, 0.9);
+		}
+
+		.gallery-indicators {
+			position: absolute;
+			bottom: 20px;
+			left: 0;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+			z-index: 10;
+		}
+
+		.gallery-indicator {
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+			background-color: rgba(248, 205, 192, 0.5);
+			cursor: pointer;
+			transition: all 0.3s;
+		}
+
+		.gallery-indicator.active {
+			background-color: rgba(248, 205, 192, 0.9);
+			transform: scale(1.2);
+		}
+
+		.gallery-link {
+			display: inline-block;
+			margin-top: 5px;
+			padding: 10px 20px;
+			background-color: #5c3c35;
+			color: #F8CDC0;
+			border-radius: 5px;
+			text-decoration: none;
+			font-weight: 500;
+			transition: all 0.3s;
+		}
+
+		.gallery-link:hover {
+			background-color: #42312b;
+			transform: translateY(-2px);
+		}
+		
+		.gallery-caption {
+			position: absolute;
+			bottom: 50px;
+			left: 0;
+			width: 100%;
+			text-align: center;
+			color: white;
+			font-size: 18px;
+			text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+			padding: 10px;
+			background-color: rgba(0,0,0,0.3);
+			z-index: 2;
+			transition: opacity 0.5s ease-in-out;
+			opacity: 0;
+		}
+
+		.gallery-caption.active {
+			opacity: 1;
+		}
+		
+		.gallery-close {
+			z-index: 1001;
+			pointer-events: auto;
 		}
 		
         
@@ -224,6 +383,7 @@
 				<div class="cover-image-container">
 					<img src="4.png" alt="Page 4" class="cover-image" loading="lazy" width="1240" height="1748">
 				</div>
+				
 				<div class="map-container">
 					<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3868.6680179162786!2d120.95490547486375!3d14.155604886279727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd79ece93ecc2f%3A0x120f4b67dc31fbe2!2sTree%20House%20Mansion!5e0!3m2!1sen!2sph!4v1747590501024!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 				</div>
@@ -241,7 +401,47 @@
                 <div class="cover-image-container">
                    <img src="6.png" alt="Page 6" class="cover-image" loading="lazy" width="1240" height="1748">
                 </div>
+				
+				<div style="text-align: center;">
+					<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+					<a href="#" class="gallery-link" id="openGallery">Mga Tema at Kulay ng Kasuotan</a>
+				</div>
             </div>
+			
+		    <!-- Gallery Modal -->
+			<div class="gallery-modal" id="galleryModal">
+				<div class="gallery-content">
+					<button class="gallery-close" id="closeGallery">&times;</button>
+					
+					<div class="gallery-nav">
+						<button id="prevBtn">&lt;</button>
+						<button id="nextBtn">&gt;</button>
+					</div>
+					
+					<div class="gallery-slide">
+						<img src="motif1.jpg" class="active" data-caption="Modern Filipianiana (Olive/Sage)">
+						<img src="motif4.jpg" data-caption="Modern Filipianiana (Caramel)">
+						<img src="motif5.jpeg" data-caption="Modern Filipianiana (Sand)">
+						<img src="motifbeige.jpg" data-caption="Modern Filipianiana (Beige)">
+						<img src="motifsand1.jpg" data-caption="Modern Filipianiana (Sand)">
+						<img src="motifsage.jpg" data-caption="Modern Filipianiana (Olive/Sage)">
+						<img src="motifolive.jpg" data-caption="Modern Filipianiana (Olive/Sage)">
+					    <img src="semiformal1.jpg" data-caption="Formal/Semi-formal Dress (Sage)">
+						<img src="semiformal2.jpg" data-caption="Formal/Semi-formal Dress (Beige/Cream/Sand)">
+						<img src="motif2.jpeg" data-caption="Barong Tagalog with Black Pants">
+						<img src="motif3.jpeg" data-caption="Barong Tagalog">
+						<img src="semiformal3.jpg" data-caption="Men Formal (Sage)">
+						<img src="semiformal4.jpg" data-caption="Men Formal (Sand)">
+						<div class="gallery-caption"></div>
+					</div>
+					
+					<div class="gallery-indicators" id="galleryIndicators">
+						<!-- Indicators will be added by JavaScript -->
+					</div>
+				</div>
+			</div>
+			
+
 			
 			<!-- Page 7 -->
             <div class="page" data-index="7">
@@ -346,39 +546,35 @@
             }
         }
         
-        // Touch event handlers
-        function handleTouchStart(e) {
-            touchStartX = e.touches[0].clientX;
-        }
+		// Touch event handlers
+		function handleTouchMove(e) {
+			if (galleryModal.style.display === 'flex') return;
+			touchEndX = e.touches[0].clientX;
+		}
 
-        function handleTouchMove(e) {
-            touchEndX = e.touches[0].clientX;
-        }
-        
-        function handleTouchEnd() {
-            handleSwipe();
-        }
+		// Mouse event handlers (for desktop testing)
+		let isMouseDown = false;
 
-        // Mouse event handlers
-        let isMouseDown = false;
+		function handleMouseDown(e) {
+			if (galleryModal.style.display === 'flex') return;
+			isMouseDown = true;
+			touchStartX = e.clientX;
+		}
 
-        function handleMouseDown(e) {
-            isMouseDown = true;
-            touchStartX = e.clientX;
-        }
+		function handleMouseMove(e) {
+			if (galleryModal.style.display === 'flex') return;
+			if (isMouseDown) {
+				touchEndX = e.clientX;
+			}
+		}
 
-        function handleMouseMove(e) {
-            if (isMouseDown) {
-                touchEndX = e.clientX;
-            }
-        }
-
-        function handleMouseUp() {
-            if (isMouseDown) {
-                handleSwipe();
-                isMouseDown = false;
-            }
-        }
+		function handleMouseUp() {
+			if (galleryModal.style.display === 'flex') return;
+			if (isMouseDown) {
+				handleSwipe();
+				isMouseDown = false;
+			}
+		}
         
         // Swipe handler
         let lastSwipeTime = 0;
@@ -513,6 +709,157 @@
 			if (oldStyle) oldStyle.remove();
 			document.head.appendChild(style);
 		}
+		
+			// Gallery functionality
+			const galleryModal = document.getElementById('galleryModal');
+			const openGalleryBtn = document.getElementById('openGallery');
+			const closeGalleryBtn = document.getElementById('closeGallery');
+			const prevBtn = document.getElementById('prevBtn');
+			const nextBtn = document.getElementById('nextBtn');
+			const galleryImages = document.querySelectorAll('.gallery-slide img');
+			const galleryIndicators = document.getElementById('galleryIndicators');
+			
+			let currentGalleryIndex = 0;
+			
+			// Add touch-specific event listeners for mobile
+			openGalleryBtn.addEventListener('touchstart', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				galleryModal.style.display = 'flex';
+				document.body.style.overflow = 'hidden';
+			});
+
+			// Create indicators
+			galleryImages.forEach((_, index) => {
+				const indicator = document.createElement('div');
+				indicator.classList.add('gallery-indicator');
+				if (index === 0) indicator.classList.add('active');
+				indicator.dataset.index = index;
+				galleryIndicators.appendChild(indicator);
+			});
+
+			const indicatorDots = document.querySelectorAll('.gallery-indicator');
+
+			// Open gallery
+			// Enhanced click handler
+			openGalleryBtn.addEventListener('click', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				galleryModal.style.display = 'flex';
+				document.body.style.overflow = 'hidden';
+				
+				// Initialize caption from data-caption attribute
+				const caption = galleryImages[currentGalleryIndex].getAttribute('data-caption');
+				const captionElement = document.querySelector('.gallery-caption');
+				captionElement.textContent = caption;
+				captionElement.classList.add('active');
+			});
+
+			// Close gallery
+			closeGalleryBtn.addEventListener('click', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				galleryModal.style.display = 'none';
+				document.body.style.overflow = '';
+				return false;
+			});
+
+			// Previous image
+			prevBtn.addEventListener('click', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				navigateGallery(-1);
+			});
+
+			// Next image
+			nextBtn.addEventListener('click', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				navigateGallery(1);
+			});
+
+			// Indicator click
+			indicatorDots.forEach(indicator => {
+				indicator.addEventListener('click', (e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					const targetIndex = parseInt(indicator.dataset.index);
+					goToGalleryImage(targetIndex);
+				});
+			});
+
+			// Keyboard navigation
+			document.addEventListener('keydown', (e) => {
+				if (galleryModal.style.display === 'flex') {
+					e.preventDefault();
+					if (e.key === 'ArrowLeft') {
+						navigateGallery(-1);
+					} else if (e.key === 'ArrowRight') {
+						navigateGallery(1);
+					} else if (e.key === 'Escape') {
+						galleryModal.style.display = 'none';
+						document.body.style.overflow = '';
+					}
+				}
+			});
+
+			// Prevent modal close when clicking inside
+			document.querySelector('.gallery-content').addEventListener('click', (e) => {
+				e.stopPropagation();
+			});
+
+			// Close when clicking outside content
+			galleryModal.addEventListener('click', function(e) {
+				if (e.target === galleryModal) {
+					e.preventDefault();
+					galleryModal.style.display = 'none';
+					document.body.style.overflow = '';
+				}
+			});
+			
+
+			function goToGalleryImage(index) {
+				galleryImages[currentGalleryIndex].classList.remove('active');
+				indicatorDots[currentGalleryIndex].classList.remove('active');
+				
+				currentGalleryIndex = index;
+				
+				galleryImages[currentGalleryIndex].classList.add('active');
+				indicatorDots[currentGalleryIndex].classList.add('active');
+				
+				// Update caption from data-caption attribute
+				const caption = galleryImages[currentGalleryIndex].getAttribute('data-caption');
+				const captionElement = document.querySelector('.gallery-caption');
+				captionElement.textContent = caption;
+				captionElement.classList.remove('active');
+				setTimeout(() => captionElement.classList.add('active'), 50);
+			}
+			
+			function navigateGallery(direction) {
+				const newIndex = (currentGalleryIndex + direction + galleryImages.length) % galleryImages.length;
+				goToGalleryImage(newIndex);
+			}
+			
+			
+			// Modified touch event handlers for page navigation
+			function handleTouchStart(e) {
+				if (galleryModal.style.display === 'flex') return;
+				// Store the target element
+				const touch = e.touches[0];
+				this.touchTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+				touchStartX = touch.clientX;
+			}
+
+			function handleTouchEnd() {
+				if (galleryModal.style.display === 'flex') return;
+				// Check if touch started and ended on gallery link
+				if (this.touchTarget && this.touchTarget.closest('#openGallery')) {
+					return;
+				}
+				handleSwipe();
+			}
+		
+		
     });
     </script>
 </body>
