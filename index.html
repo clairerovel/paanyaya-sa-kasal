@@ -136,16 +136,49 @@
 		
 		@media (max-width: 768px) {
 			.book {
-				max-width: 100%; /* Even larger on small screens */
-				max-height: 200vh; /* Adjust height to fit better */
+				max-width: 95vw; /* Even larger on small screens */
+				max-height: 85vh; /* Adjust height to fit better */
 			}
 			
 			.book-container {
-				padding: 10px 5px 15px 5px; /* Minimize padding on mobile */
+				padding: 10px 5px 30px 5px; /* Minimize padding on mobile */
 			}
 			
 			.page {
 				box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); /* Enhanced shadow for better depth */
+			}
+		}	
+
+		.map-container {
+			position: absolute;
+			top: 8%;  /* Changed from bottom to top */
+			left: 17%;  /* Changed from centered to left-aligned */
+			transform: none;  /* Removed the centering transform */
+			width: 75%;  /* Reduced from 80% */
+			max-width: 300px;  /* Reduced from 500px */
+			height: auto;
+			z-index: 5;
+			border-radius: 10px;
+			overflow: hidden;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+		}
+
+		.map-container iframe {
+			width: 100%;
+			height: 185px;  /* Reduced height */
+			border: none;
+		}
+
+		@media (max-width: 768px) {
+			.map-container {
+				top: 10%;
+				left: 5%;
+				width: 50%;
+				max-width: 250px;
+			}
+			
+			.map-container iframe {
+				height: 150px;
 			}
 		}
 		
@@ -187,11 +220,14 @@
             </div>
             
             <!-- Page 4 -->
-            <div class="page" data-index="4">
-                <div class="cover-image-container">
-                   <img src="4.png" alt="Page 4" class="cover-image" loading="lazy" width="1240" height="1748">
-                </div>
-            </div>
+			<div class="page" data-index="4">
+				<div class="cover-image-container">
+					<img src="4.png" alt="Page 4" class="cover-image" loading="lazy" width="1240" height="1748">
+				</div>
+				<div class="map-container">
+					<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3868.6680179162786!2d120.95490547486375!3d14.155604886279727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd79ece93ecc2f%3A0x120f4b67dc31fbe2!2sTree%20House%20Mansion!5e0!3m2!1sen!2sph!4v1747590501024!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+				</div>
+			</div>
             
             <!-- Page 5 -->
             <div class="page" data-index="5">
@@ -201,30 +237,30 @@
             </div>
 			
 			 <!-- Page 6 -->
-            <div class="page" data-index="5">
+            <div class="page" data-index="6">
                 <div class="cover-image-container">
-                   <img src="6.png" alt="Page 5" class="cover-image" loading="lazy" width="1240" height="1748">
+                   <img src="6.png" alt="Page 6" class="cover-image" loading="lazy" width="1240" height="1748">
                 </div>
             </div>
 			
 			<!-- Page 7 -->
-            <div class="page" data-index="5">
+            <div class="page" data-index="7">
                 <div class="cover-image-container">
-                   <img src="7.png" alt="Page 5" class="cover-image" loading="lazy" width="1240" height="1748">
+                   <img src="7.png" alt="Page 7" class="cover-image" loading="lazy" width="1240" height="1748">
                 </div>
             </div>
 			
 			<!-- Page 8 -->
-            <div class="page" data-index="5">
+            <div class="page" data-index="8">
                 <div class="cover-image-container">
-                   <img src="8.png" alt="Page 5" class="cover-image" loading="lazy" width="1240" height="1748">
+                   <img src="8.png" alt="Page 8" class="cover-image" loading="lazy" width="1240" height="1748">
                 </div>
             </div>
 			
 			<!-- Page 9 -->
-            <div class="page" data-index="5">
+            <div class="page" data-index="9">
                 <div class="cover-image-container">
-                   <img src="9.png" alt="Page 5" class="cover-image" loading="lazy" width="1240" height="1748">
+                   <img src="9.png" alt="Page 9" class="cover-image" loading="lazy" width="1240" height="1748">
                 </div>
             </div>
 			
@@ -241,6 +277,7 @@
 		<div class="indicator" data-index="6"></div>
 		<div class="indicator" data-index="7"></div>
 		<div class="indicator" data-index="8"></div>
+		<div class="indicator" data-index="9"></div>
     </div>
     
     <script>
