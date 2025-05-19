@@ -454,10 +454,17 @@
 			}
 			
 			.floating-menu {
-				position: absolute;
-				top: 8%;  /* Changed from bottom to top */
+				top: 18%;  /* Changed from bottom to top */
 				left: 17%;  /* Changed from centered to left-aligned */
-				transform: none;  /* Removed the centering transform */
+
+			}
+
+			.menu-content {
+				position: absolute;
+				top: 100%; /* Positions below the toggle button */
+				max-height: 60vh; /* Limits height to 60% of viewport */
+				overflow-y: auto; /* Adds scroll if needed */
+				margin-top: 10px;
 			}
 			
 			.menu-toggle {
