@@ -321,90 +321,6 @@
 			pointer-events: auto;
 		}
 		
-		/* Floating Menu Styles */
-		.floating-menu {
-			position: fixed;
-			top: 17vh;        /* Adjust this value to move up/down */
-			left: 39vw;       /* Adjust this value to move left/right */
-			z-index: 200;
-			display: flex;
-			flex-direction: column;
-	
-		}
-
-		.menu-toggle {
-			width: 50px;
-			height: 50px;
-			border-radius: 50%;
-			background: rgba(92, 60, 53, 0.8);
-			border: none;
-			color: #FFFAEC;
-			font-size: 20px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			cursor: pointer;
-			box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-			transition: all 0.3s ease;
-			align-self: flex-end;
-		}
-
-		.menu-toggle:hover {
-			background: rgba(92, 60, 53, 1);
-			transform: scale(1.05);
-		}
-
-		.menu-content {
-			display: none;
-			background: rgba(255, 250, 236, 0.95);
-			border-radius: 10px;
-			margin-top: 10px;
-			box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-			max-height: 70vh;
-			overflow-y: auto;
-			width: 220px;
-			transition: all 0.3s ease;
-			opacity: 0;
-			transform: translateX(20px);
-			position: absolute;
-			top: 100%; /* Positions below the toggle button */
-			max-height: 60vh; /* Limits height to 60% of viewport */
-			overflow-y: auto; /* Adds scroll if needed */
-			margin-top: 10px;
-		}
-
-		.menu-content.active {
-			display: block;
-			opacity: 1;
-			transform: translateX(0);
-		}
-
-		.menu-header {
-			padding: 15px;
-			font-weight: bold;
-			color: #5c3c35;
-			border-bottom: 1px solid rgba(92, 60, 53, 0.2);
-			text-align: center;
-			font-size: 16px;
-		}
-
-		.menu-item {
-			padding: 12px 15px;
-			color: #5c3c35;
-			cursor: pointer;
-			transition: all 0.2s ease;
-			border-bottom: 1px solid rgba(92, 60, 53, 0.1);
-		}
-
-		.menu-item:hover {
-			background: rgba(248, 205, 192, 0.3);
-		}
-
-		.menu-item.active {
-			background: rgba(248, 205, 192, 0.5);
-			font-weight: bold;
-		}
-		
 		.gdrive-map {
 			position: absolute;
 			top: 29%;  /* Changed from bottom to top */
@@ -449,27 +365,6 @@
 				top: 29%;  /* Changed from bottom to top */
 				left: 38%;  /* Changed from centered to left-aligned */
 				transform: none;  /* Removed the centering transform */
-			}
-			
-
-			.menu-content {
-				position: absolute;
-				top: 25%; /* Positions below the toggle button */
-				left: 13%;  /* Changed from centered to left-aligned */
-				max-height: 60vh; /* Limits height to 60% of viewport */
-				overflow-y: auto; /* Adds scroll if needed */
-				margin-top: 10px;
-			}
-			
-			.menu-toggle {
-				width: 45px;
-				height: 45px;
-				font-size: 18px;
-			}
-			
-			.menu-content {
-				width: 200px;
-				right: 0;
 			}
 			
 		}
@@ -617,22 +512,7 @@
 		<div class="indicator" data-index="8"></div>
 		<div class="indicator" data-index="9"></div>
     </div>
-	
-	<!-- Floating Menu -->
-	<div id="floatingMenu" class="floating-menu">
-		<button id="menuToggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
-		<div class="menu-content">
-			<div class="menu-header">Talaan ng Nilalaman</div>
-			<div class="menu-item" data-page="2">Ang Aming Kwento</div>
-			<div class="menu-item" data-page="3">Lokasyon at Resepyson</div>
-			<div class="menu-item" data-page="4">Direksyon (Mapa)</div>
-			<div class="menu-item" data-page="5">Gabay at Kulay</div>
-			<div class="menu-item" data-page="6">Tema at Kulay</div>
-			<div class="menu-item" data-page="7">Gabay at Abay</div>
-			<div class="menu-item" data-page="8">Larawan</div>
-			<div class="menu-item" data-page="9">RSVP</div>
-		</div>
-	</div>
+
     
     <script>
    document.addEventListener('DOMContentLoaded', function() {
@@ -1013,58 +893,6 @@
 				handleSwipe();
 			}
 			
-			// Floating menu functionality - UPDATED
-			const menuToggle = document.getElementById('menuToggle');
-			const menuContent = document.querySelector('.menu-content');
-			const menuItems = document.querySelectorAll('.menu-item');
-
-			// Toggle menu
-			menuToggle.addEventListener('click', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				menuContent.classList.toggle('active');
-			});
-
-			// Close menu when clicking outside
-			document.addEventListener('click', function(e) {
-				if (!e.target.closest('.floating-menu')) {
-					menuContent.classList.remove('active');
-				}
-			});
-
-			// Menu item click - UPDATED
-			menuItems.forEach(item => {
-				item.addEventListener('click', function(e) {
-					e.preventDefault();
-					e.stopPropagation();
-					const targetPage = parseInt(this.getAttribute('data-page'));
-					if (!isAnimating && targetPage !== currentPageIndex) {
-						// Directly go to the target page without animation
-						pages[currentPageIndex].classList.remove('active');
-						pages[currentPageIndex].style.visibility = 'hidden';
-						
-						currentPageIndex = targetPage;
-						pages[currentPageIndex].classList.add('active');
-						pages[currentPageIndex].style.visibility = 'visible';
-						
-						updateIndicators();
-						updateActiveMenuItem();
-					}
-					menuContent.classList.remove('active');
-				});
-			});
-			
-			function updateActiveMenuItem() {
-				menuItems.forEach(item => {
-					const itemPage = parseInt(item.getAttribute('data-page'));
-					item.classList.toggle('active', itemPage === currentPageIndex);
-				});
-			}
-			
-			updateActiveMenuItem();
-			
-			// Add this check to your handleMouseDown and handleTouchStart functions:
-			if (e.target.closest('.floating-menu')) return;
 		
     });
     </script>
