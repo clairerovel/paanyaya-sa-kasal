@@ -641,40 +641,46 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
 	function switchPageDirectly(targetIndex) {
-		console.log('Switching to page:', targetIndex);
+		if (isAnimating) return; // Prevent if already animating
 		isAnimating = true;
 
-		// Hide all interactive elements first
+		// Reset all animation classes
+		pages.forEach(page => {
+			page.classList.remove('flipping', 'flipping-back');
+		});
+
+		// Hide all interactive elements
 		document.querySelectorAll('.map-container, .gallery-map, .gdrive-map')
 			.forEach(el => el.style.display = 'none');
 
-		// Remove active class from all pages
+		// Deactivate all pages
 		pages.forEach((page) => {
 			page.classList.remove('active');
+			page.style.visibility = 'hidden'; // Ensure visibility is reset
 			page.style.zIndex = '';
 		});
 
-		// Activate the target page
+		// Activate target page
 		const targetPage = pages[targetIndex];
 		targetPage.classList.add('active');
+		targetPage.style.visibility = 'visible';
 		targetPage.style.zIndex = '999';
 
-		// Show interactive elements for the current page
+		// Show target's interactive elements
 		const mapContainer = targetPage.querySelector('.map-container');
 		const galleryMap = targetPage.querySelector('.gallery-map');
 		const gdriveMap = targetPage.querySelector('.gdrive-map');
-		
 		if (mapContainer) mapContainer.style.display = 'block';
 		if (galleryMap) galleryMap.style.display = 'block';
 		if (gdriveMap) gdriveMap.style.display = 'block';
 
 		currentPageIndex = targetIndex;
 		updateIndicators();
-		
-		// Re-enable animations after a short delay
+
+		// Allow animations after reset
 		setTimeout(() => {
 			isAnimating = false;
-		}, 50);
+		}, 50); // Match transition duration
 	}
     
     function updateMenuActiveState() {
