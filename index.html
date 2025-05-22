@@ -365,6 +365,8 @@
 			cursor: pointer;
 			white-space: nowrap;
 			transition: all 0.3s;
+			-webkit-tap-highlight-color: transparent; /* Remove blue highlight on mobile */
+			user-select: none; /* Prevent text selection */
 		}
 
 		.menu-option:hover, .menu-option.active {
@@ -615,10 +617,17 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('mouseup', handleMouseUp, { passive: true });
     
     // Menu functionality - Fixed version
-    menuOptions.forEach(option => {
-        option.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+	 menuOptions.forEach(option => {
+		// Add touchstart for immediate feedback on mobile
+		option.addEventListener('touchstart', function(e) {
+			e.preventDefault();
+			this.style.backgroundColor = 'rgba(248, 205, 192, 0.3)';
+		}, { passive: false });
+		
+		// Add touchend to handle the actual navigation
+		option.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
             
             const targetIndex = parseInt(this.dataset.index);
             console.log('Menu clicked, target index:', targetIndex, 'current:', currentPageIndex);
@@ -636,18 +645,45 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Switch to target page directly
-            switchPageDirectly(targetIndex);
+            switchPageDirectly(targetIndex);, { passive: false });
+
         });
     });
     
 	function switchPageDirectly(targetIndex) {
 		if (isAnimating) return; // Prevent if already animating
+		
+		console.log('Switching from page', currentPageIndex, 'to page', targetIndex);
+		
 		isAnimating = true;
+	
+		// Get current and target pages
+		const currentPage = pages[currentPageIndex];
+		const targetPage = pages[targetIndex];
 
+		// Remove active class from current page
+		currentPage.classList.remove('active');
+		
+	
 		// Reset all animation classes
 	    pages.forEach(page => {
 			page.classList.remove('flipping', 'flipping-back');
 			page.style.transition = 'none'; // Disable transitions temporarily
+		});
+		
+		// Reset all pages visibility and z-index
+		pages.forEach((page, index) => {
+			if (index === targetIndex) {
+				// Show target page
+				page.style.visibility = 'visible';
+				page.style.zIndex = '999';
+				page.classList.add('active');
+			} else {
+				// Hide all other pages
+				page.style.visibility = 'hidden';
+				page.style.zIndex = '';
+				page.classList.remove('active');
+			}
 		});
 
 		// Hide all interactive elements
@@ -660,6 +696,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			page.style.visibility = 'hidden'; // Ensure visibility is reset
 			page.style.zIndex = '';
 		});
+		
 
 		// Activate target page
 		const targetPage = pages[targetIndex];
@@ -680,12 +717,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		void targetPage.offsetWidth;
 
 		// Allow animations after reset
+		// Reset animation flag and restore transitions
 		setTimeout(() => {
 			pages.forEach(page => {
-				page.style.transition = ''; // Restore original transitions
+				page.style.transition = '';
 			});
 			isAnimating = false;
-		}, 50);
+		}, 100);
+		
+		console.log('Page switch completed. New current page:', currentPageIndex);
 	
 	}
     
