@@ -330,47 +330,6 @@
 			transform: none;  /* Removed the centering transform */
 		}
 		
-		@media (max-width: 768px) {
-			.book {
-				max-width: 95vw; /* Even larger on small screens */
-				max-height: 85vh; /* Adjust height to fit better */
-			}
-			
-			.book-container {
-				padding: 10px 5px 30px 5px; /* Minimize padding on mobile */
-			}
-			
-			.page {
-				box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); /* Enhanced shadow for better depth */
-			}
-			
-			.map-container {
-				top: 10%;
-				left: 25%;
-				width: 50%;
-				max-width: 250px;
-			}
-			
-			.map-container iframe {
-				height: 150px;
-			}
-			
-			.gallery-map {
-				position: absolute;
-				top: 85%;  /* Changed from bottom to top */
-				left: 20%;  /* Changed from centered to left-aligned */
-				transform: none;  /* Removed the centering transform */
-			}
-			
-			.gdrive-map {
-				position: absolute;
-				top: 29%;  /* Changed from bottom to top */
-				left: 38%;  /* Changed from centered to left-aligned */
-				transform: none;  /* Removed the centering transform */
-			}
-			
-		}
-		
 		/* Main Menu Styles */
 		.main-menu {
 			position: fixed;
@@ -411,8 +370,46 @@
 		.menu-option:hover, .menu-option.active {
 			background-color: rgba(248, 205, 192, 0.3);
 		}
-
+		
 		@media (max-width: 768px) {
+			.book {
+				max-width: 95vw; /* Even larger on small screens */
+				max-height: 85vh; /* Adjust height to fit better */
+			}
+			
+			.book-container {
+				padding: 10px 5px 30px 5px; /* Minimize padding on mobile */
+			}
+			
+			.page {
+				box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); /* Enhanced shadow for better depth */
+			}
+			
+			.map-container {
+				top: 10%;
+				left: 25%;
+				width: 50%;
+				max-width: 250px;
+			}
+			
+			.map-container iframe {
+				height: 150px;
+			}
+			
+			.gallery-map {
+				position: absolute;
+				top: 85%;  /* Changed from bottom to top */
+				left: 20%;  /* Changed from centered to left-aligned */
+				transform: none;  /* Removed the centering transform */
+			}
+			
+			.gdrive-map {
+				position: absolute;
+				top: 29%;  /* Changed from bottom to top */
+				left: 38%;  /* Changed from centered to left-aligned */
+				transform: none;  /* Removed the centering transform */
+			}
+			
 			.main-menu {
 				top: 25px;
 			}
@@ -420,15 +417,17 @@
 			.menu-options {
 				gap: 5px;
 				padding: 8px;
+				gap: 1px;
+				max-width: 80%;
 			}
 			
 			.menu-option {
 				font-size: 11px;
 				padding: 4px 8px;
 			}
-		}		
-		
-		
+			
+		}
+
 
     </style>
 </head>
