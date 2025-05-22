@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kasal ni : Claire at Rovel</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
@@ -21,7 +21,8 @@
             flex-direction: column;
             overflow: hidden;
             color: #FFFAEC;
-            touch-action: manipulation;
+            touch-action: pan-y; /* Allow vertical scroll but block horizontal */
+			-webkit-overflow-scrolling: touch;
         }
 
         .instruction {
@@ -348,7 +349,7 @@
 			justify-content: center;
 			gap: 1px;
 			max-width: 80%;
-			padding: 10px;
+			padding: 10px 12px !important;
 			background-color: rgba(92, 60, 53, 0.8);
 			border-radius: 20px;
 			backdrop-filter: blur(5px);
@@ -601,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize
     pages[0].classList.add('active');
-    applyAnimationStyle();
+	applyAnimationStyle();
     updateIndicators();
     
     // Event listeners
@@ -615,33 +616,36 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('mouseup', handleMouseUp, { passive: true });
     
     // Menu functionality - Fixed version
-    menuOptions.forEach(option => {
-        option.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const targetIndex = parseInt(this.dataset.index);
-            console.log('Menu clicked, target index:', targetIndex, 'current:', currentPageIndex);
-            
-            // Validate target index
-            if (targetIndex < 0 || targetIndex >= pages.length || isNaN(targetIndex)) {
-                console.error('Invalid page index:', targetIndex);
-                return;
-            }
-            
-            // Don't do anything if already on target page
-            if (targetIndex === currentPageIndex) {
-                console.log('Already on target page');
-                return;
-            }
-            
-            // Switch to target page directly
-            switchPageDirectly(targetIndex);
-        });
-    });
+	menuOptions.forEach(option => {
+		// Touch feedback for mobile
+		option.addEventListener('touchstart', function(e) {
+			e.preventDefault();
+			this.style.backgroundColor = 'rgba(248, 205, 192, 0.3)';
+		}, { passive: false });
+
+		// Actual navigation handler
+		option.addEventListener('touchend', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			
+			const targetIndex = parseInt(this.dataset.index);
+			if (targetIndex === currentPageIndex || isAnimating) return;
+			switchPageDirectly(targetIndex);
+			
+			// Reset touch feedback
+			this.style.backgroundColor = '';
+		}, { passive: false });
+
+		// Click handler for desktop fallback
+		option.addEventListener('click', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			switchPageDirectly(parseInt(this.dataset.index));
+		});
+	});
     
 	function switchPageDirectly(targetIndex) {
-		if (isAnimating) return; // Prevent if already animating
+		if (isAnimating || targetIndex === currentPageIndex) return;
 		isAnimating = true;
 
 		// Reset all animation classes
@@ -666,6 +670,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		targetPage.classList.add('active');
 		targetPage.style.visibility = 'visible';
 		targetPage.style.zIndex = '999';
+		
+		void targetPage.offsetWidth;
 
 		// Show target's interactive elements
 		const mapContainer = targetPage.querySelector('.map-container');
@@ -677,8 +683,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		currentPageIndex = targetIndex;
 		updateIndicators();
-		void targetPage.offsetWidth;
-
+		
 		// Allow animations after reset
 		setTimeout(() => {
 			pages.forEach(page => {
@@ -731,6 +736,42 @@ document.addEventListener('DOMContentLoaded', function() {
             navigateToPage(targetIndex);
         });
     });
+	
+	    function applyAnimationStyle() {
+        // Remove all animation classes first
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('flipping', 'flipping-back');
+        });
+        
+        // Force reflow to ensure animations restart
+        document.querySelectorAll('.page').forEach(page => {
+            void page.offsetWidth;
+        });
+
+        const style = document.createElement('style');
+        style.id = 'animation-style';
+        
+        // Update animation style to respect container size
+        style.textContent = `
+            .page {
+                transition: all 1s cubic-bezier(0.47, 0, 0.745, 0.715);
+            }
+            .flipping {
+                transform: scale(0.2) translateX(-100%);
+                opacity: 0;
+                z-index: 10;
+            }
+            .flipping-back {
+                transform: scale(0.2) translateX(100%);
+                opacity: 0;
+                z-index: 10;
+            }
+        `;
+        
+        const oldStyle = document.getElementById('animation-style');
+        if (oldStyle) oldStyle.remove();
+        document.head.appendChild(style);
+    }
     
     function navigateToPage(targetIndex) {
         if (targetIndex === currentPageIndex || isAnimating) return;
@@ -870,42 +911,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 600);
         }
     }
-    
-    function applyAnimationStyle() {
-        // Remove all animation classes first
-        document.querySelectorAll('.page').forEach(page => {
-            page.classList.remove('flipping', 'flipping-back');
-        });
-        
-        // Force reflow to ensure animations restart
-        document.querySelectorAll('.page').forEach(page => {
-            void page.offsetWidth;
-        });
 
-        const style = document.createElement('style');
-        style.id = 'animation-style';
-        
-        // Update animation style to respect container size
-        style.textContent = `
-            .page {
-                transition: all 1s cubic-bezier(0.47, 0, 0.745, 0.715);
-            }
-            .flipping {
-                transform: scale(0.2) translateX(-100%);
-                opacity: 0;
-                z-index: 10;
-            }
-            .flipping-back {
-                transform: scale(0.2) translateX(100%);
-                opacity: 0;
-                z-index: 10;
-            }
-        `;
-        
-        const oldStyle = document.getElementById('animation-style');
-        if (oldStyle) oldStyle.remove();
-        document.head.appendChild(style);
-    }
     
     // Gallery functionality
     const galleryModal = document.getElementById('galleryModal');
