@@ -383,6 +383,15 @@
 			
 			.page {
 				box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); /* Enhanced shadow for better depth */
+				transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+			}
+
+			.flipping {
+   				transform: rotateY(-180deg);
+			}
+			
+			.flipping-back {
+    				transform: rotateY(180deg);
 			}
 			
 			.map-container {
